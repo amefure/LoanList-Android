@@ -10,16 +10,18 @@
         android:id="@+id/result_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="176dp"
         android:text="TextView"
         app:layout_constraintBottom_toTopOf="@+id/sort_clear_button"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="176dp" />
+        app:layout_constraintVertical_bias="0.454" />
 
     <Button
         android:id="@+id/borrow_button"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:background="@drawable/borrow_button"
+        android:background="@drawable/borrow_button_design"
         android:paddingLeft="0dp"
         android:paddingTop="0dp"
         android:paddingRight="0dp"
@@ -35,12 +37,12 @@
         android:id="@+id/loan_button"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:background="@drawable/loan_button"
+        android:background="@drawable/loan_button_design"
         android:paddingLeft="0dp"
         android:paddingTop="0dp"
         android:paddingRight="0dp"
         android:paddingBottom="0dp"
-        android:text="借"
+        android:text="貸"
         app:backgroundTint="@null"
         app:layout_constraintBaseline_toBaselineOf="@+id/name_buttnon"
         app:layout_constraintEnd_toEndOf="parent"
@@ -51,17 +53,17 @@
         android:id="@+id/name_buttnon"
         android:layout_width="160dp"
         android:layout_height="30dp"
-        android:background="@drawable/name_button"
+        android:background="@drawable/name_button_design"
         android:paddingLeft="0dp"
         android:paddingTop="0dp"
         android:paddingRight="0dp"
         android:paddingBottom="0dp"
         android:text="Button"
         app:backgroundTint="@null"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toStartOf="@+id/loan_button"
         app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/borrow_button"
-        tools:layout_editor_absoluteY="71dp" />
+        app:layout_constraintStart_toEndOf="@+id/borrow_button" />
 
 
     <ImageButton
@@ -74,7 +76,7 @@
         android:paddingTop="0dp"
         android:paddingRight="0dp"
         android:paddingBottom="0dp"
-        android:src="@drawable/sort_button"
+        android:src="@drawable/sort_button_design"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.223"
@@ -92,9 +94,10 @@
         android:paddingTop="0dp"
         android:paddingRight="0dp"
         android:paddingBottom="0dp"
-        android:src="@drawable/sort_clear_button"
+        android:src="@drawable/sort_clear_button_design"
         app:layout_constraintBottom_toTopOf="@+id/name_buttnon"
-        tools:layout_editor_absoluteX="190dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageButton
         android:id="@+id/navigation_button"
@@ -107,14 +110,17 @@
         android:paddingTop="0dp"
         android:paddingRight="0dp"
         android:paddingBottom="0dp"
-        android:src="@drawable/navigation_settings"
+        android:src="@drawable/navigation_settings_button_design"
         app:layout_constraintBottom_toTopOf="@+id/loan_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.646"
+        app:layout_constraintStart_toEndOf="@+id/result_label"
         app:layout_constraintTop_toTopOf="parent"
-        tools:layout_editor_absoluteX="339dp" />
+        app:layout_constraintVertical_bias="0.687" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="412dp"
-        android:layout_height="0dp"
+        android:layout_height="500dp"
         android:layout_marginTop="10dp"
         android:layout_marginBottom="60dp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -130,4 +136,24 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintGuide_begin="119dp" />
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/floating_action_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="16dp"
+        android:contentDescription="追加ボタン"
+        android:foregroundTintMode="add"
+        app:backgroundTint="@color/thema6"
+        app:fabSize="mini"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.926"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.962"
+        app:srcCompat="@drawable/add_button_icon"
+        />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
