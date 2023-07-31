@@ -2,4 +2,10 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="thema1">#DD8147</color>
+    <color name="thema2">#44B9BD</color>
+    <color name="thema3">#99D9DF</color>
+    <color name="thema4">#68B7D0</color>
+    <color name="thema5">#3D92C2</color>
+    <color name="thema6">#2E5D96</color>
 </resources>
