@@ -8,9 +8,13 @@ android {
     namespace 'com.amefure.loanlist'
     compileSdk 33
 
+    buildFeatures {
+        dataBinding true
+    }
+
     defaultConfig {
         applicationId "com.amefure.loanlist"
-        minSdk 24
+        minSdk 26
         targetSdk 33
         versionCode 1
         versionName "1.0"
