@@ -5,15 +5,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.amefure.loanlist.databinding.FragmentInputBinding
+import android.widget.Button
 import java.time.LocalDate
-import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Date
 
 class InputFragment : Fragment() {
 
-    private lateinit var binding: FragmentInputBinding
     private var isLoan: Boolean = false
     private var date: LocalDate? = null
 
@@ -29,30 +26,30 @@ class InputFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val loanButton:Button = view.findViewById(R.id.loan_button)
 
-
-        binding.loanButton.setOnClickListener {
+        loanButton.setOnClickListener {
             isLoan = true
         }
-        binding.borrowButton.setOnClickListener {
-            isLoan = false
-        }
-
-        // DatePickerの値が変化したときに呼び出されるリスナーを設定
-        binding.datePicker.setOnDateChangedListener { datePicker, year, month, day ->
-
-            val dateString = String.format("%04d-%02d-%02d", year, month + 1, day)
-            date = getFormatDate(dateString)
-        }
-
-        binding.doneButton.setOnClickListener {
-
-            val amount = binding.amountText.text
-            val memo = binding.memoText.text
-            parentFragmentManager.apply {
-                popBackStack()
-            }
-        }
+//        binding.borrowButton.setOnClickListener {
+//            isLoan = false
+//        }
+//
+//        // DatePickerの値が変化したときに呼び出されるリスナーを設定
+//        binding.datePicker.setOnDateChangedListener { datePicker, year, month, day ->
+//
+//            val dateString = String.format("%04d-%02d-%02d", year, month + 1, day)
+//            date = getFormatDate(dateString)
+//        }
+//
+//        binding.doneButton.setOnClickListener {
+//
+//            val amount = binding.amountText.text
+//            val memo = binding.memoText.text
+//            parentFragmentManager.apply {
+//                popBackStack()
+//            }
+//        }
 
     }
 
