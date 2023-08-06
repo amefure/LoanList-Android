@@ -2,6 +2,7 @@ package com.amefure.loanlist
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.amefure.loanlist.View.InputFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class MainActivity : AppCompatActivity() {
