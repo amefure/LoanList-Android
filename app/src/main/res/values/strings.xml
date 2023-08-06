@@ -1,5 +1,11 @@
 <resources>
     <string name="app_name">LoanList</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!-- activity_main & fragment_input  -->
+    <string name="borrow_button_text">借</string>
+    <string name="loan_button_text">貸</string>
+    <!-- fragment_input only   -->
+    <string name="amount_placeholder">金額</string>
+    <string name="memo_placeholder">memo</string>
+
 </resources>
