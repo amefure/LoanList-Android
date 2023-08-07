@@ -5,10 +5,10 @@
     android:id="@+id/frameLayout3"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".UserListItemFragment">
+    tools:context=".View.BorrowerListItemFragment">
 
     <ImageView
-        android:id="@+id/imageView"
+        android:id="@+id/return_flag_img"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="30dp"
@@ -21,19 +21,19 @@
         app:layout_constraintVertical_bias="0.0" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/borrower_name"
         android:layout_width="0dp"
         android:layout_height="20dp"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
-        android:text="UserName"
+        android:text="BorrowerName"
         android:textSize="16sp"
-        app:layout_constraintBaseline_toBaselineOf="@+id/textView2"
+        app:layout_constraintBaseline_toBaselineOf="@+id/sum_amount"
         app:layout_constraintEnd_toStartOf="@+id/guideline3"
-        app:layout_constraintStart_toEndOf="@+id/imageView" />
+        app:layout_constraintStart_toEndOf="@+id/return_flag_img" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/sum_amount"
         android:layout_width="0dp"
         android:layout_height="20dp"
         android:layout_marginTop="20dp"
@@ -42,12 +42,12 @@
         android:text="+100,000"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/imageView2"
-        app:layout_constraintStart_toEndOf="@+id/textView"
+        app:layout_constraintEnd_toStartOf="@+id/active_flag_img"
+        app:layout_constraintStart_toEndOf="@+id/borrower_name"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/active_flag_img"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"

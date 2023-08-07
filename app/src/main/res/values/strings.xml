@@ -7,5 +7,7 @@
     <!-- fragment_input only   -->
     <string name="amount_placeholder">金額</string>
     <string name="memo_placeholder">memo</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

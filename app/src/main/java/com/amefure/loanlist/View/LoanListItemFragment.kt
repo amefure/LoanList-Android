@@ -1,10 +1,11 @@
-package com.amefure.loanlist
+package com.amefure.loanlist.View
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.amefure.loanlist.R
 
 class LoanListItemFragment : Fragment() {
 

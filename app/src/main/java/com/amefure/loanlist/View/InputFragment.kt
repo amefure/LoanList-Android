@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.DatePicker
+import android.widget.ImageButton
 import android.widget.TextView
 import com.amefure.loanlist.R
 import java.time.LocalDate
@@ -31,7 +32,7 @@ class InputFragment : Fragment() {
 
         val loanButton:Button = view.findViewById(R.id.loan_button)
         val borrowButton:Button = view.findViewById(R.id.borrow_button)
-        val doneButton:Button = view.findViewById(R.id.done_button)
+        val doneButton:ImageButton = view.findViewById(R.id.done_button)
         val amountText:TextView = view.findViewById(R.id.amount_text)
         val memoText:TextView = view.findViewById(R.id.memo_text)
 
@@ -52,14 +53,14 @@ class InputFragment : Fragment() {
             date = getFormatDate(dateString)
         }
 //
-        doneButton.setOnClickListener {
-
-            val amount = amountText.text
-            val memo =  memoText.text
-            parentFragmentManager.apply {
-                popBackStack()
-            }
-        }
+//        doneButton.setOnClickListener {
+//
+//            val amount = amountText.text
+//            val memo =  memoText.text
+//            parentFragmentManager.apply {
+//                popBackStack()
+//            }
+//        }
 
     }
 

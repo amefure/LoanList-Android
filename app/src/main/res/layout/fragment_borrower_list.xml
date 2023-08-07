@@ -5,7 +5,9 @@
     android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".View.UserListFragment">
+    android:background="@android:color/white"
+    android:clickable="true"
+    tools:context=".View.BorrowerListFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <androidx.recyclerview.widget.RecyclerView
@@ -41,7 +43,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:backgroundTint="@color/thema6"
-        android:cornerRadius="20dp"
+        app:cornerRadius="20dp"
         android:text="登録"
         android:textColor="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
