@@ -9,15 +9,15 @@
     tools:context=".View.LoanListItemFragment">
 
     <ImageView
-        android:id="@+id/imageView3"
+        android:id="@+id/back_image"
         android:layout_width="0dp"
         android:layout_height="90dp"
         android:src="@drawable/loan_list_item_background"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         tools:layout_conversion_absoluteHeight="104dp"
-        tools:layout_conversion_absoluteWidth="411dp"
-        tools:layout_editor_absoluteY="0dp" />
+        tools:layout_conversion_absoluteWidth="411dp" />
 
     <TextView
         android:id="@+id/date_text"
@@ -57,8 +57,8 @@
         android:textColor="@color/white"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/imageView3"
-        app:layout_constraintEnd_toEndOf="@+id/imageView3"
+        app:layout_constraintBottom_toBottomOf="@+id/back_image"
+        app:layout_constraintEnd_toEndOf="@+id/back_image"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:layout_conversion_absoluteHeight="22dp"

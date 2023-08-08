@@ -28,9 +28,6 @@ class InputFragment : Fragment() {
     companion object {
         lateinit var db : MoneyRecordDatabase
         lateinit var dao : MoneyRecordDao
-
-        lateinit var bdb : BorrowerDatabase
-        lateinit var bdao : BorrowerDao
     }
 
     private val compositeDisposable = CompositeDisposable()
@@ -49,12 +46,9 @@ class InputFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val dd = BorrowerDatabase.getDatabase(view.context)
         db = MoneyRecordDatabase.getDatabase(view.context)
         dao = db.dao()
 
-        bdb = BorrowerDatabase.getDatabase(view.context)
-        bdao = bdb.dao()
 
         val loanButton:Button = view.findViewById(R.id.loan_button)
         val borrowButton:Button = view.findViewById(R.id.borrow_button)
@@ -82,14 +76,9 @@ class InputFragment : Fragment() {
 
             val amount = amountText.text
             val memo =  memoText.text
-//            val borrower = Borrower(
-//                id = 0,
-//                name = "Test",
-//                returnFlag = false
-//            )
+
 
             runBlocking {
-//                val borrowerId:Int = bdao.insertBorrower(borrower).toInt()
                 val record = MoneyRecord(
                     id = 0,
                     amount = 0,
@@ -105,12 +94,6 @@ class InputFragment : Fragment() {
             }
         }
     }
-
-//    fun getFormatDate(dateStr: String) : LocalDate {
-//        val df = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssZ")
-//        val fdate = LocalDate.parse(dateStr, df)
-//        return fdate
-//    }
 
     override fun onDestroy() {
         super.onDestroy()

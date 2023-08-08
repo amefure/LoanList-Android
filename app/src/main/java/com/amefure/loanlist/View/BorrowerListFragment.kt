@@ -82,4 +82,9 @@ class BorrowerListFragment : Fragment() {
                 )
         )
     }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        compositeDisposable.clear()
+    }
 }

@@ -7,26 +7,6 @@ import androidx.room.Query
 import androidx.room.Update
 import io.reactivex.Flowable
 
-
-@Dao
-interface BorrowerDao {
-    @Insert
-    suspend fun insertBorrower(borrower: Borrower): Long
-
-    @Update
-    suspend fun updateBorrower(borrower: Borrower)
-
-    @Delete
-    suspend fun deleteBorrower(borrower: Borrower)
-
-    @Query("SELECT * FROM borrower_table")
-    fun getAllBorrowers(): Flowable<List<Borrower>>
-
-    @Query("SELECT * FROM borrower_table WHERE id = :id")
-    fun getBorrowerById(id: Int): Flowable<Borrower>
-
-}
-
 @Dao
 interface MoneyRecordDao {
     @Insert
