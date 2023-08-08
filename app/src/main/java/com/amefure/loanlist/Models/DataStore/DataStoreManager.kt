@@ -14,7 +14,7 @@ class DataStoreManager(private val context: Context) {
 
     companion object {
         val SORT_ITEM = stringPreferencesKey("sort_item")
-        val CURRENT_USER = stringPreferencesKey("current_user")
+        val CURRENT_USER_ID = stringPreferencesKey("current_user_id")
     }
 
     suspend fun saveSortItem(sortItem: String) {
@@ -42,14 +42,14 @@ class DataStoreManager(private val context: Context) {
     suspend fun saveCurrentUser(currentUser: String) {
         try {
             context.dataStore.edit { preferences ->
-                preferences[CURRENT_USER] = currentUser
+                preferences[CURRENT_USER_ID] = currentUser
             }
         } catch (e: IOException) {
             // Handle the exception here if needed
         }
     }
 
-   public fun observeCurrentUser(): Flow<String?> {
+   public fun observeCurrentUserId(): Flow<String?> {
         return context.dataStore.data.catch { exception ->
             if (exception is IOException) {
                 emit(emptyPreferences())
@@ -57,7 +57,7 @@ class DataStoreManager(private val context: Context) {
                 throw exception
             }
         }.map { preferences ->
-            preferences[CURRENT_USER]
+            preferences[CURRENT_USER_ID]
         }
     }
 }

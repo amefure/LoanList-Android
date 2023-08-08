@@ -1,17 +1,17 @@
 package com.amefure.loanlist.Models.Room
 
-import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
+import io.reactivex.Flowable
 
 
 @Dao
 interface BorrowerDao {
     @Insert
-    suspend fun insertBorrower(borrower: Borrower)
+    suspend fun insertBorrower(borrower: Borrower): Long
 
     @Update
     suspend fun updateBorrower(borrower: Borrower)
@@ -20,10 +20,10 @@ interface BorrowerDao {
     suspend fun deleteBorrower(borrower: Borrower)
 
     @Query("SELECT * FROM borrower_table")
-    fun getAllBorrowers(): LiveData<List<Borrower>>
+    fun getAllBorrowers(): Flowable<List<Borrower>>
 
     @Query("SELECT * FROM borrower_table WHERE id = :id")
-    fun getBorrowerById(id: Int): LiveData<Borrower>
+    fun getBorrowerById(id: Int): Flowable<Borrower>
 
 }
 
@@ -39,6 +39,6 @@ interface MoneyRecordDao {
     suspend fun deleteMoneyRecord(moneyRecord: MoneyRecord)
 
     @Query("SELECT * FROM record_table WHERE borrower_id = :borrowerId")
-    fun getAllRecordsForBorrower(borrowerId: Int): LiveData<List<MoneyRecord>>
+    fun getAllRecordsForBorrower(borrowerId: Int): Flowable<List<MoneyRecord>>
 
 }
