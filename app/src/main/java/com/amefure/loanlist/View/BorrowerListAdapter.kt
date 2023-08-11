@@ -1,26 +1,26 @@
 package com.amefure.loanlist.View
 
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+
 import androidx.recyclerview.widget.RecyclerView
 import com.amefure.loanlist.Models.DataStore.DataStoreManager
 import com.amefure.loanlist.Models.Room.Borrower
 import com.amefure.loanlist.R
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-
-class BorrowerListAdapter (borrowerList: List<Borrower>) :RecyclerView.Adapter<BorrowerListAdapter.MainViewHolder>(){
-
+class BorrowerListAdapter (private val viewModel: BorrowerListViewModel,borrowerList: List<Borrower>) :RecyclerView.Adapter<BorrowerListAdapter.MainViewHolder>(){
     private val _borrowerList: MutableList<Borrower> = borrowerList.toMutableList()
 
     override fun getItemCount(): Int = _borrowerList.size
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
         return MainViewHolder(
-            // XMLレイアウトファイルからViewオブジェクトを作成
+
             LayoutInflater.from(parent.context).inflate(R.layout.fragment_borrower_list_item, parent, false)
         )
     }
@@ -40,6 +40,15 @@ class BorrowerListAdapter (borrowerList: List<Borrower>) :RecyclerView.Adapter<B
         } else {
             holder.activeFlagImage.visibility = View.GONE
         }
+    }
+
+    fun deleteItem(position: Int) {
+        if (position < 0 || position >= _borrowerList.size) {
+            return
+        }
+        val item = _borrowerList[position]
+        viewModel.deleteBorrower(item)
+        notifyItemRemoved(position)
     }
 
     class MainViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {

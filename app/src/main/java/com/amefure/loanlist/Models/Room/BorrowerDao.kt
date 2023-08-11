@@ -11,13 +11,13 @@ import io.reactivex.Flowable
 @Dao
 interface BorrowerDao {
     @Insert
-    suspend fun insertBorrower(borrower: Borrower): Long
+    fun insertBorrower(borrower: Borrower)
 
     @Update
-    suspend fun updateBorrower(borrower: Borrower)
+    fun updateBorrower(borrower: Borrower)
 
     @Delete
-    suspend fun deleteBorrower(borrower: Borrower)
+    fun deleteBorrower(borrower: Borrower)
 
     @Query("SELECT * FROM borrower_table")
     fun getAllBorrowers(): Flowable<List<Borrower>>
