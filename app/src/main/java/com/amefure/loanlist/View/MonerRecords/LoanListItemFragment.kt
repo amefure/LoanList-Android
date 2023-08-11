@@ -1,4 +1,4 @@
-package com.amefure.loanlist.View
+package com.amefure.loanlist.View.MonerRecords
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

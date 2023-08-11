@@ -1,22 +1,18 @@
-package com.amefure.loanlist.View
+package com.amefure.loanlist.View.Borrower
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.amefure.loanlist.App
 import com.amefure.loanlist.Models.Room.Borrower
-import com.amefure.loanlist.Models.Room.RootRepository
+import com.amefure.loanlist.RootViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
-abstract class rootViewModel(application: Application) : AndroidViewModel(application) {
-    protected val rootRepository = (application as App).rootRepository
-}
 
-class BorrowerListViewModel(app: Application) : rootViewModel(app) {
+class BorrowerListViewModel(app: Application) : RootViewModel(app) {
 
     private val _borrowerList = MutableLiveData<List<Borrower>>()
     val borrowerList: LiveData<List<Borrower>> = _borrowerList

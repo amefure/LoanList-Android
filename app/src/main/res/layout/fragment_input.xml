@@ -31,7 +31,7 @@
         android:background="@color/thema1"
         android:ems="10"
         android:hint="@string/amount_placeholder"
-        android:inputType="text"
+        android:inputType="number"
         android:shadowRadius="@dimen/material_emphasis_disabled"
         android:textAlignment="center"
         android:textColor="@color/white"

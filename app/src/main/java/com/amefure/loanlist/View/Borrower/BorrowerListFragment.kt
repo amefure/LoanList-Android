@@ -1,4 +1,4 @@
-package com.amefure.loanlist.View
+package com.amefure.loanlist.View.Borrower
 
 import android.content.Context
 import android.graphics.Color

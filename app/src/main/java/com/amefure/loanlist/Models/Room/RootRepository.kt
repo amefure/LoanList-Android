@@ -6,6 +6,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.coroutines.runBlocking
+import java.time.temporal.TemporalAmount
 
 class RootRepository (context: Context) {
 
@@ -41,5 +42,37 @@ class RootRepository (context: Context) {
         borrowerDao.deleteBorrower(borrower)
     }
 
+
+//    MoneyRecords
+
+    public fun loadMoneyrecords(callback: (List<MoneyRecord>) -> Unit) {
+        compositeDisposable.add(
+            recordDao.getAllRecordsForBorrower(1)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { records ->
+                        // データ取得完了時の処理
+                        callback(records)
+                    }
+                )
+        )
+    }
+
+    public fun insertMoneyRecord(amount: Long,desc:String,borrow:Boolean,date:String) {
+    val record = MoneyRecord(
+        id = 0,
+        amount = amount,
+        desc = desc,
+        borrow = borrow,
+        date = date,
+        borrowerId = 1
+    )
+        recordDao.insertMoneyRecord(record)
+    }
+
+    public fun deleteMoneyRecord(record:MoneyRecord) {
+        recordDao.deleteMoneyRecord(record)
+    }
 
 }

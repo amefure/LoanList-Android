@@ -1,4 +1,4 @@
-package com.amefure.loanlist.View
+package com.amefure.loanlist.View.Borrower
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment

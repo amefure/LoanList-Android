@@ -19,9 +19,9 @@ import androidx.room.PrimaryKey
 data class MoneyRecord (
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "record_id") val id: Int,
-    val amount: Int,
-    val desc: String,
-    val borrow: Boolean,
+    val amount: Long,  // 金額
+    val desc: String,  // 内容
+    val borrow: Boolean, // 借貸フラグ 真:貸付(オレンジ) 偽：借入(青)
     val date: String,
     @ColumnInfo(name = "borrower_id") val borrowerId: Int
 )

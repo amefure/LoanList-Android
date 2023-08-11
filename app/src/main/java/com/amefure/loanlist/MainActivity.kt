@@ -1,9 +1,7 @@
 package com.amefure.loanlist
 
-import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.ImageButton
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -12,10 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.amefure.loanlist.Models.Room.MoneyRecord
 import com.amefure.loanlist.Models.Room.MoneyRecordDao
 import com.amefure.loanlist.Models.Room.MoneyRecordDatabase
-import com.amefure.loanlist.View.BorrowerListFragment
-import com.amefure.loanlist.View.InputFragment
-import com.amefure.loanlist.View.LoanListAdapter
-import com.amefure.loanlist.View.SettingsFragment
+import com.amefure.loanlist.View.Borrower.BorrowerListFragment
+import com.amefure.loanlist.View.Input.InputFragment
+import com.amefure.loanlist.View.MonerRecords.LoanListAdapter
+import com.amefure.loanlist.View.Settings.SettingsFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable

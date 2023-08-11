@@ -1,4 +1,4 @@
-package com.amefure.loanlist.View
+package com.amefure.loanlist.View.Borrower
 
 
 import android.graphics.Canvas
@@ -9,6 +9,7 @@ import androidx.appcompat.content.res.AppCompatResources
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.amefure.loanlist.R
+import com.amefure.loanlist.View.Borrower.BorrowerListAdapter
 
 class BorrowerListSwipeToDeleteCallback(private val adapter: BorrowerListAdapter) : ItemTouchHelper.SimpleCallback(
     ItemTouchHelper.ACTION_STATE_IDLE, // ドラッグアンドドロップをサポートしない場合は0

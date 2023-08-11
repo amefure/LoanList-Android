@@ -6,7 +6,7 @@
     style="bold"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:context=".View.LoanListItemFragment">
+    tools:context=".View.MonerRecords.LoanListItemFragment">
 
     <ImageView
         android:id="@+id/back_image"
