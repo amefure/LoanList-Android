@@ -16,7 +16,7 @@ class InputViewModel(app:Application):RootViewModel(app) {
 
     fun registerRecord(amount: Long, desc:String, borrow:Boolean, date:String) {
         viewModelScope.launch(Dispatchers.IO) {
-            rootRepository.insertMoneyRecords(amount,desc,borrow,date)
+            rootRepository.insertMoneyRecord(amount,desc,borrow,date)
         }
 
     }

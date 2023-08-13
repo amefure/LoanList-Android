@@ -4,7 +4,6 @@ import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.amefure.loanlist.Models.Room.Borrower
 import com.amefure.loanlist.Models.Room.MoneyRecord
 import com.amefure.loanlist.RootViewModel
 import kotlinx.coroutines.Dispatchers
@@ -12,7 +11,7 @@ import kotlinx.coroutines.launch
 
 class LoanListViewModel(app:Application):RootViewModel(app) {
     private val _recordList = MutableLiveData<List<MoneyRecord>>()
-    val borrowerList: LiveData<List<MoneyRecord>> = _recordList
+    val recordList: LiveData<List<MoneyRecord>> = _recordList
 
     fun loadRecordItems() {
         // データの取得は非同期で
