@@ -4,23 +4,29 @@ import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Toast
+import androidx.core.view.get
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.SimpleOnItemTouchListener
+import com.amefure.loanlist.Models.Room.Borrower
 import com.amefure.loanlist.R
 import com.google.android.material.snackbar.Snackbar
 
 
 class BorrowerListFragment : Fragment() {
     private val viewModel: BorrowerListViewModel by viewModels()
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -68,6 +74,14 @@ class BorrowerListFragment : Fragment() {
         recyclerView.addItemDecoration(
             DividerItemDecoration(view.context, DividerItemDecoration.VERTICAL)
         )
+
+
+
+        // カスタムのSimpleOnItemTouchListenerを追加
+        val itemTouchListener = BorrowerListTouchListener()
+        recyclerView.addOnItemTouchListener(itemTouchListener)
+
+
         viewModel.borrowerList.observe(this.requireActivity()) {
             val adapter = BorrowerListAdapter(viewModel,it)
             val swipeToDeleteCallback = BorrowerListSwipeToDeleteCallback(adapter)

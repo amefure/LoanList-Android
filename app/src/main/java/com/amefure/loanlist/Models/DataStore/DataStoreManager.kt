@@ -3,6 +3,7 @@ package com.amefure.loanlist.Models.DataStore
 import android.content.Context
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
@@ -14,7 +15,7 @@ class DataStoreManager(private val context: Context) {
 
     companion object {
         val SORT_ITEM = stringPreferencesKey("sort_item")
-        val CURRENT_USER_ID = stringPreferencesKey("current_user_id")
+        val CURRENT_USER_ID = intPreferencesKey("current_user_id")
     }
 
     suspend fun saveSortItem(sortItem: String) {
@@ -39,7 +40,7 @@ class DataStoreManager(private val context: Context) {
         }
     }
 
-    suspend fun saveCurrentUser(currentUser: String) {
+    suspend fun saveCurrentUser(currentUser: Int) {
         try {
             context.dataStore.edit { preferences ->
                 preferences[CURRENT_USER_ID] = currentUser
@@ -49,7 +50,7 @@ class DataStoreManager(private val context: Context) {
         }
     }
 
-   public fun observeCurrentUserId(): Flow<String?> {
+   public fun observeCurrentUserId(): Flow<Int?> {
         return context.dataStore.data.catch { exception ->
             if (exception is IOException) {
                 emit(emptyPreferences())

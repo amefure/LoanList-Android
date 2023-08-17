@@ -15,8 +15,11 @@ import android.widget.ImageButton
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import com.amefure.loanlist.Models.DataStore.DataStoreManager
 import com.amefure.loanlist.R
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.runBlocking
 import java.util.Calendar
 
 class InputFragment : Fragment() {
@@ -38,6 +41,8 @@ class InputFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val currentId = getCurrentBorrowerId()
 
         val loanButton:Button = view.findViewById(R.id.loan_button)
         val borrowButton:Button = view.findViewById(R.id.borrow_button)
@@ -68,25 +73,25 @@ class InputFragment : Fragment() {
             date = getFormatDateString(year,month,day)
         }
         doneButton.setOnClickListener {
-
-            val amount = amountText.text.toString().toLongOrNull()
-            val memo =  memoText.text.toString()
-            if (amount != null) {
-                viewModel.registerRecord(amount,memo,isBorrow,date)
-                showOffKeyboard()
-                Snackbar.make(view,"追加しました。", Snackbar.LENGTH_SHORT)
-                    .setBackgroundTint(Color.GREEN)
-                    .show()
-                parentFragmentManager.apply {
-                    popBackStack()
+            if (currentId != null) {
+                val amount = amountText.text.toString().toLongOrNull()
+                val memo =  memoText.text.toString()
+                if (amount != null) {
+                    viewModel.registerRecord(currentId,amount,memo,isBorrow,date)
+                    showOffKeyboard()
+                    Snackbar.make(view,"追加しました。", Snackbar.LENGTH_SHORT)
+                        .setBackgroundTint(Color.GREEN)
+                        .show()
+                    parentFragmentManager.apply {
+                        popBackStack()
+                    }
+                } else {
+                    showOffKeyboard()
+                    Snackbar.make(view,"金額が未入力です。", Snackbar.LENGTH_SHORT)
+                        .setBackgroundTint(Color.RED)
+                        .show()
                 }
-            } else {
-                showOffKeyboard()
-                Snackbar.make(view,"金額が未入力です。", Snackbar.LENGTH_SHORT)
-                    .setBackgroundTint(Color.RED)
-                    .show()
             }
-
         }
     }
 
@@ -98,5 +103,15 @@ class InputFragment : Fragment() {
     private fun getFormatDateString(year:Int,month:Int,day:Int):String {
         val dateString = String.format("%04d-%02d-%02d", year, month + 1, day)
         return dateString
+    }
+
+    private fun getCurrentBorrowerId(): Int? {
+        val dataStoreManager = DataStoreManager(this.requireContext())
+        var id:Int?
+        runBlocking {
+            val flow = dataStoreManager.observeCurrentUserId()
+            id = flow.first().toString().toInt()
+        }
+        return id
     }
 }

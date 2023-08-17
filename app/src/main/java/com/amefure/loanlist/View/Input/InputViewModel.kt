@@ -14,9 +14,9 @@ class InputViewModel(app:Application):RootViewModel(app) {
     private val _loanList = MutableLiveData<List<MoneyRecord>>()
     val loanList: LiveData<List<MoneyRecord>> = _loanList
 
-    fun registerRecord(amount: Long, desc:String, borrow:Boolean, date:String) {
+    fun registerRecord(currentId:Int,amount: Long, desc:String, borrow:Boolean, date:String) {
         viewModelScope.launch(Dispatchers.IO) {
-            rootRepository.insertMoneyRecord(amount,desc,borrow,date)
+            rootRepository.insertMoneyRecord(currentId,amount,desc,borrow,date)
         }
 
     }

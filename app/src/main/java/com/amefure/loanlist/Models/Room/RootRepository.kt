@@ -2,9 +2,11 @@ package com.amefure.loanlist.Models.Room
 
 import android.content.Context
 import androidx.room.Room
+import com.amefure.loanlist.Models.DataStore.DataStoreManager
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import java.time.temporal.TemporalAmount
 
@@ -14,6 +16,8 @@ class RootRepository (context: Context) {
     private val recordDao = MoneyRecordDatabase.getDatabase(context).dao()
 
     private val compositeDisposable = CompositeDisposable()
+
+
 
     public fun loadBorrowerItems(callback: (List<Borrower>) -> Unit) {
         compositeDisposable.add(
@@ -45,9 +49,9 @@ class RootRepository (context: Context) {
 
 //    MoneyRecords
 
-    public fun loadMoneyrecords(callback: (List<MoneyRecord>) -> Unit) {
+    public fun loadMoneyRecords(currentId:Int,callback: (List<MoneyRecord>) -> Unit) {
         compositeDisposable.add(
-            recordDao.getAllRecordsForBorrower(1)
+            recordDao.getAllRecordsForBorrower(currentId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -59,14 +63,14 @@ class RootRepository (context: Context) {
         )
     }
 
-    public fun insertMoneyRecord(amount: Long,desc:String,borrow:Boolean,date:String) {
+    public fun insertMoneyRecord(currentId:Int,amount: Long,desc:String,borrow:Boolean,date:String) {
     val record = MoneyRecord(
         id = 0,
         amount = amount,
         desc = desc,
         borrow = borrow,
         date = date,
-        borrowerId = 1
+        borrowerId = currentId
     )
         recordDao.insertMoneyRecord(record)
     }
@@ -74,5 +78,6 @@ class RootRepository (context: Context) {
     public fun deleteMoneyRecord(record:MoneyRecord) {
         recordDao.deleteMoneyRecord(record)
     }
+
 
 }

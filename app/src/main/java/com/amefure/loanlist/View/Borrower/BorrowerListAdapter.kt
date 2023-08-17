@@ -27,20 +27,28 @@ class BorrowerListAdapter (private val viewModel: BorrowerListViewModel, borrowe
         val borrower = _borrowerList[position]
 
         holder.borrower.text = borrower.name
-        holder.amount.text = borrower.id.toString()
+        holder.amount.text = "" // borrower.id.toString()
         if (borrower.returnFlag) {
             holder.returnFlagImage.setImageResource(R.drawable.user_flag)
         } else {
             holder.returnFlagImage.setImageResource(R.drawable.user_done_flag)
         }
-        if (holder.getCurrentBorrowerId() == borrower.id.toString()) {
+        if (holder.getCurrentBorrowerId() == borrower.id) {
             holder.activeFlagImage.setImageResource(R.drawable.check_button)
         } else {
             holder.activeFlagImage.visibility = View.GONE
         }
     }
 
-    fun deleteItem(position: Int) {
+    public  fun getItemAtPosition(position: Int) : Borrower? {
+        if (position < 0 || position >= _borrowerList.size) {
+            return null
+        }
+        val item = _borrowerList[position]
+        return item
+    }
+
+     public fun deleteItem(position: Int) {
         if (position < 0 || position >= _borrowerList.size) {
             return
         }
@@ -57,11 +65,11 @@ class BorrowerListAdapter (private val viewModel: BorrowerListViewModel, borrowe
 
         val dataStoreManager = DataStoreManager(itemView.context)
 
-        fun getCurrentBorrowerId(): String{
-            var id = ""
+        fun getCurrentBorrowerId(): Int?{
+            var id:Int?
             runBlocking {
                 val flow = dataStoreManager.observeCurrentUserId()
-                id = flow.first().toString()
+                id = flow.first()
             }
             return id
         }
