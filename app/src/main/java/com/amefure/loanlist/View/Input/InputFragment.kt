@@ -27,7 +27,7 @@ class InputFragment : Fragment() {
 
     private val viewModel:InputViewModel by viewModels()
 
-    private var isBorrow: Boolean = false
+    private var isBorrow: Boolean = true
     private var date: String = ""
 
     override fun onCreateView(

@@ -30,7 +30,7 @@ class LoanListAdapter(private val viewModel: LoanListViewModel, recordList: List
 
         holder.amount.text = record.amount.toString()
         holder.date.text = record.date
-        holder.memo.text = record.desc
+        holder.memo.text = record.borrow.toString()
         if (record.borrow) {
             holder.backImg.setImageResource(R.drawable.loan_list_item_background)
         } else {

@@ -6,6 +6,8 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,28 +21,39 @@ import com.amefure.loanlist.View.MonerRecords.LoanListViewModel
 import com.amefure.loanlist.View.Settings.SettingsFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 
 class MainActivity : AppCompatActivity() {
     private val viewModel: LoanListViewModel by viewModels()
 
+    private val dataStoreManager = DataStoreManager(this)
+
+    // アクティブになるBorrowerID
+    private var currentId: Int? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val currentId = getCurrentBorrowerId()
-
+        // 選択されているBorrowerの変更を観測する
+        observeCurrentBorrowerId()
+        observeCurrentBorrowerName()
 
         val actionBtn: FloatingActionButton = findViewById(R.id.floating_action_button)
         actionBtn.setOnClickListener {
             if (currentId != null) {
+                // Borrowerが設定されていれば
+                // Input画面へ遷移
                 supportFragmentManager.beginTransaction().apply {
                     add(R.id.main_frame, InputFragment())
                     addToBackStack(null)
                     commit()
                 }
             } else {
+                // Borrowerが設定されていなければ
+                // 設定されていないことを警告
                 Toast.makeText(this,currentId.toString(),Toast.LENGTH_LONG)
                     .show()
             }
@@ -63,14 +76,16 @@ class MainActivity : AppCompatActivity() {
                 commit()
             }
         }
-        // アクティブになっているBorrowerがある時のみ
+
 
         if (currentId != null) {
-            observedMoneyRecordsData(currentId)
+            // アクティブになっているBorrowerがある時のみレコードをセット
+            observedMoneyRecordsData(currentId as Int)
         }
 
     }
 
+    /// Borrowerに紐づくレコードデータをセット&観測
     private fun observedMoneyRecordsData(currentId:Int) {
         val recyclerView: RecyclerView = findViewById(R.id.loan_list)
         recyclerView.layoutManager = LinearLayoutManager(this)
@@ -87,13 +102,23 @@ class MainActivity : AppCompatActivity() {
         viewModel.loadRecordItems(currentId)
     }
 
-    private fun getCurrentBorrowerId(): Int? {
-        val dataStoreManager = DataStoreManager(this)
-        var id:Int?
-        runBlocking {
-            val flow = dataStoreManager.observeCurrentUserId()
-            id = flow.first()
+    /// アクティブになっているBorrowerIDを観測し変更があるたびにレコードデータを更新する
+    private fun observeCurrentBorrowerId() {
+        lifecycleScope.launch{
+            dataStoreManager.observeCurrentUserId().collect {
+                currentId =  it
+                observedMoneyRecordsData(currentId as Int)
+            }
         }
-        return id
+    }
+
+    /// アクティブになっているBorrowerNameを観測し変更があるたびにNameButtonを更新する
+    private fun observeCurrentBorrowerName() {
+        val nameBtn: Button = findViewById(R.id.name_buttnon)
+        lifecycleScope.launch{
+            dataStoreManager.observeCurrentUserName().collect {
+                nameBtn.text =  it.toString()
+            }
+        }
     }
 }
