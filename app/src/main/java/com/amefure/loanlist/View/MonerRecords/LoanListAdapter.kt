@@ -7,16 +7,32 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.amefure.loanlist.Models.Room.Borrower
 import com.amefure.loanlist.Models.Room.MoneyRecord
 import com.amefure.loanlist.R
+import com.amefure.loanlist.View.Borrower.BorrowerListFragment
 import com.amefure.loanlist.View.Borrower.BorrowerListViewModel
 
 
 class LoanListAdapter(private val viewModel: LoanListViewModel, recordList: List<MoneyRecord>) :RecyclerView.Adapter<LoanListAdapter.MainViewHolder>(){
 
     private val _recordList: MutableList<MoneyRecord> = recordList.toMutableList()
-
     override fun getItemCount(): Int = _recordList.size
+
+    // 1. リスナを格納する変数を定義（lateinitで初期化を遅らせている）
+    private lateinit var listener: OnBookCellClickListener
+
+
+    // 2. インターフェースを作成
+    interface  OnBookCellClickListener {
+        fun onItemClick(record: MoneyRecord)
+    }
+
+    // 3. リスナーをセット
+    fun setOnBookCellClickListener(listener: OnBookCellClickListener) {
+        // 定義した変数listenerに実行したい処理を引数で渡す（BookListFragmentで渡している）
+        this.listener = listener
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
         return MainViewHolder(
@@ -26,7 +42,13 @@ class LoanListAdapter(private val viewModel: LoanListViewModel, recordList: List
     }
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
+
         val record = _recordList[position]
+
+        holder.itemView.setOnClickListener {
+            // セルがクリックされた時にインターフェースの処理が実行される
+            listener.onItemClick(record)
+        }
 
         holder.amount.text = record.amount.toString()
         holder.date.text = record.date
@@ -51,5 +73,14 @@ class LoanListAdapter(private val viewModel: LoanListViewModel, recordList: List
         val item = _recordList[position]
         viewModel.deleteMoneyRecord(item)
         notifyItemRemoved(position)
+    }
+
+    public fun getItemAtPosition(position: Int) : MoneyRecord? {
+        if (position < 0 || position >= _recordList.size) {
+            return null
+        }
+        val item = _recordList[position]
+
+        return item
     }
 }
