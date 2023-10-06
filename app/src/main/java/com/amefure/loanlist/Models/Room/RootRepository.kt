@@ -75,6 +75,18 @@ class RootRepository (context: Context) {
         recordDao.insertMoneyRecord(record)
     }
 
+    public fun updateMoneyRecord(currentId:Int,recordId:Int,amount: Long,desc:String,borrow:Boolean,date:String) {
+        val record = MoneyRecord(
+            id = recordId,
+            amount = amount,
+            desc = desc,
+            borrow = borrow,
+            date = date,
+            borrowerId = currentId
+        )
+        recordDao.updateMoneyRecord(record)
+    }
+
     public fun deleteMoneyRecord(record:MoneyRecord) {
         recordDao.deleteMoneyRecord(record)
     }

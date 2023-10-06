@@ -12,6 +12,7 @@ import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import com.amefure.loanlist.R
+import com.amefure.loanlist.View.Input.InputFragment
 
 private const val ARG_ID_KEY = "ARG_ID_KEY"
 private const val ARG_AMOUNT_KEY = "ARG_AMOUNT_KEY"
@@ -61,7 +62,11 @@ class LoanDetailFragment : Fragment() {
         }
         val editBtn:ImageButton = view.findViewById(R.id.edit_button)
         editBtn.setOnClickListener {
-
+            parentFragmentManager.beginTransaction().apply {
+                add(R.id.main_frame, InputFragment.editInstance(id,amount,date,borrow,memo))
+                addToBackStack(null)
+                commit()
+            }
         }
 
         val deleteBtn:ImageButton = view.findViewById(R.id.delete_button)
