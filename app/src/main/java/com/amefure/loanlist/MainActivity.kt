@@ -21,16 +21,27 @@ import com.amefure.loanlist.View.Settings.SettingsFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
+    override fun onDeleteClick(id: Int) {
+        // LoanDetailFragmentで削除ボタンを押されたイベント
+        adapter.deleteItem(id)
+        supportFragmentManager.popBackStack()
+    }
+
     private val viewModel: LoanListViewModel by viewModels()
 
     private val dataStoreManager = DataStoreManager(this)
+
+    private lateinit var adapter: LoanListAdapter
+    private lateinit var recyclerView: RecyclerView
 
     // アクティブになるBorrowerID
     private var currentId: Int? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        recyclerView = findViewById(R.id.loan_list)
 
         // 選択されているBorrowerの変更を観測する
         observeCurrentBorrowerId()
@@ -82,22 +93,29 @@ class MainActivity : AppCompatActivity() {
 
     /// Borrowerに紐づくレコードデータをセット&観測
     private fun observedMoneyRecordsData(currentId:Int) {
-        val recyclerView: RecyclerView = findViewById(R.id.loan_list)
+
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.addItemDecoration(
             DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         )
         viewModel.recordList.observe(this) {
 
-            val adapter = LoanListAdapter(viewModel, it)
+            adapter = LoanListAdapter(viewModel, it)
 
             adapter.setOnBookCellClickListener(
                 object : LoanListAdapter.OnBookCellClickListener {
                     override fun onItemClick(record: MoneyRecord) {
-//                        // 画面遷移処理
+
+                        val fragment = LoanDetailFragment.newInstance(
+                            record.id,
+                            record.amount.toString(),
+                            record.date,
+                            record.borrow,
+                            record.desc
+                        )
                         supportFragmentManager
                             .beginTransaction()
-                            .replace(R.id.main_frame, LoanDetailFragment.newInstance(record.amount.toString()))
+                            .replace(R.id.main_frame, fragment)
                             .addToBackStack(null)
                             .commit()
                     }

@@ -19,12 +19,10 @@ class LoanListAdapter(private val viewModel: LoanListViewModel, recordList: List
     private val _recordList: MutableList<MoneyRecord> = recordList.toMutableList()
     override fun getItemCount(): Int = _recordList.size
 
-    // 1. リスナを格納する変数を定義（lateinitで初期化を遅らせている）
     private lateinit var listener: OnBookCellClickListener
 
-
     // 2. インターフェースを作成
-    interface  OnBookCellClickListener {
+    interface OnBookCellClickListener {
         fun onItemClick(record: MoneyRecord)
     }
 
@@ -66,21 +64,8 @@ class LoanListAdapter(private val viewModel: LoanListViewModel, recordList: List
         val memo: TextView = itemView.findViewById(R.id.memo_text)
         val backImg: ImageView = itemView.findViewById(R.id.back_image)
     }
-    fun deleteItem(position: Int) {
-        if (position < 0 || position >= _recordList.size) {
-            return
-        }
-        val item = _recordList[position]
-        viewModel.deleteMoneyRecord(item)
-        notifyItemRemoved(position)
-    }
-
-    public fun getItemAtPosition(position: Int) : MoneyRecord? {
-        if (position < 0 || position >= _recordList.size) {
-            return null
-        }
-        val item = _recordList[position]
-
-        return item
+    public fun deleteItem(id: Int) {
+        var item = _recordList.filter { it.id == id }
+        viewModel.deleteMoneyRecord(item.first())
     }
 }
