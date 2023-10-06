@@ -17,7 +17,8 @@ class LoanListViewModel(app:Application):RootViewModel(app) {
         // データの取得は非同期で
         viewModelScope.launch (Dispatchers.IO) {  // データ取得はIOスレッドで
             rootRepository.loadMoneyRecords(currentId) {
-                _recordList.postValue(it)  // 本来はDBやCacheから取得
+                // 日付の降順でソートをかけておく
+                _recordList.postValue(it.sortedBy { it.date }.reversed())  // 本来はDBやCacheから取得
             }
         }
     }
