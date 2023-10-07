@@ -60,7 +60,7 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
             } else {
                 // Borrowerが設定されていなければ
                 // 設定されていないことを警告
-                Toast.makeText(this,currentId.toString(),Toast.LENGTH_LONG)
+                Toast.makeText(this,"",Toast.LENGTH_LONG)
                     .show()
             }
         }
@@ -131,7 +131,14 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
         lifecycleScope.launch{
             dataStoreManager.observeCurrentUserId().collect {
                 currentId =  it
-                observedMoneyRecordsData(currentId as Int)
+                //　削除された際(IDが0)にはnullにする
+                if (currentId == 0) {
+                    currentId = null
+                }
+                // nullじゃなければ該当Borrowerのレコードを観測開始
+                if (currentId != null) {
+                    observedMoneyRecordsData(currentId as Int)
+                }
             }
         }
     }

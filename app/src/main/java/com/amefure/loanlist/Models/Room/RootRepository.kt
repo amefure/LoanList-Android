@@ -37,9 +37,20 @@ class RootRepository (context: Context) {
         val borrower = Borrower(
             id = 0,
             name = name,
-            returnFlag = false
+            returnFlag = false,
+            current = false
         )
             borrowerDao.insertBorrower(borrower)
+    }
+
+    public fun updateBorrower(id: Int, name:String, returnFlag: Boolean , current: Boolean) {
+        val borrower = Borrower(
+            id = id,
+            name = name,
+            returnFlag = returnFlag,
+            current = current
+        )
+        borrowerDao.updateBorrower(borrower)
     }
 
     public fun deleteBorrower(borrower:Borrower) {

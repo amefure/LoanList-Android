@@ -48,7 +48,7 @@ class LoanListAdapter(private val viewModel: LoanListViewModel, recordList: List
             listener.onItemClick(record)
         }
 
-        holder.amount.text = record.amount.toString()
+        holder.amount.text = "%,d".format(record.amount) + "円"
         holder.date.text = record.date
         holder.memo.text = record.desc
         if (record.borrow) {

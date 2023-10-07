@@ -10,6 +10,8 @@ data class Borrower (
     val id: Int,
     val name: String,
     @ColumnInfo(name = "return_flag") val returnFlag: Boolean,
+    // アプリ内でアクティブになる借主
+    val current: Boolean
 ){
     companion object {
 
@@ -19,7 +21,8 @@ data class Borrower (
                 Borrower(
                     id = it,
                     name = "borrower $it",
-                    returnFlag = false
+                    returnFlag = false,
+                    current = false
                 )
             }
         }

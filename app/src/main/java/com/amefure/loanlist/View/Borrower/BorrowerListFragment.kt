@@ -42,8 +42,6 @@ class BorrowerListFragment : Fragment() {
             tappedRegisterButton(view)
         }
         observedBorrowerData(view)
-
-//        tets(view)
     }
 
     private fun tappedRegisterButton(view: View,) {
@@ -77,7 +75,7 @@ class BorrowerListFragment : Fragment() {
 
 
         // カスタムのSimpleOnItemTouchListenerを追加
-        val itemTouchListener = BorrowerListTouchListener()
+        val itemTouchListener = BorrowerListTouchListener(viewModel)
         recyclerView.addOnItemTouchListener(itemTouchListener)
 
 
@@ -90,23 +88,7 @@ class BorrowerListFragment : Fragment() {
         }
         viewModel.loadBorrowerItems()
 
-    }
 
-    private fun tets(view:View){
-        val dataStoreManager = DataStoreManager(view.context)
-        var flow = dataStoreManager.observeCurrentUserId()
-        runBlocking {
-            flow.collect{
-//                if (preBorrowerId == null) {
-//                    if (it != null){
-//                        if (preBorrowerId != it){
-//                            preBorrowerId = it
-////                        parentFragmentManager.popBackStack()
-//                        }
-//                    }
-//                }
-            }
-        }
     }
 
 

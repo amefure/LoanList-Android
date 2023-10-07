@@ -51,7 +51,7 @@ class LoanDetailFragment : Fragment() {
         val dateLabel:TextView = view.findViewById(R.id.date_label)
         val backImg:ImageView = view.findViewById(R.id.back_image)
         val memoLabel:TextView = view.findViewById(R.id.memo_text)
-        amountLabel.setText(amount + "円")
+        amountLabel.setText("%,d".format(amount.toInt()) + "円")
         dateLabel.setText(date)
         memoLabel.setText(memo)
 
@@ -74,10 +74,13 @@ class LoanDetailFragment : Fragment() {
 
             // ダイアログの表示
             AlertDialog.Builder(this.requireContext())
-                .setTitle("削除しました。")
+                .setTitle("削除しますか？")
                 .setPositiveButton("OK", { dialog, which ->
                     // MainActivityへイベントを送信
                     listener?.onDeleteClick(id)
+                })
+                .setNegativeButton("キャンセル", { dialog, which ->
+                    // キャンセル
                 })
                 .show()
 

@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.amefure.loanlist.App
+import com.amefure.loanlist.Models.DataStore.DataStoreManager
 import com.amefure.loanlist.Models.Room.Borrower
 import com.amefure.loanlist.RootViewModel
 import kotlinx.coroutines.Dispatchers
@@ -15,8 +16,8 @@ import kotlinx.coroutines.launch
 class BorrowerListViewModel(app: Application) : RootViewModel(app) {
 
     private val _borrowerList = MutableLiveData<List<Borrower>>()
-    val borrowerList: LiveData<List<Borrower>> = _borrowerList
-
+    public val borrowerList: LiveData<List<Borrower>> = _borrowerList
+    private val dataStoreManager = DataStoreManager(app)
 
     fun loadBorrowerItems() {
         // データの取得は非同期で
@@ -33,8 +34,16 @@ class BorrowerListViewModel(app: Application) : RootViewModel(app) {
         }
     }
 
+    fun updateBorrower(id: Int, name:String, returnFlag: Boolean , current: Boolean) {
+        viewModelScope.launch(Dispatchers.IO) {
+            rootRepository.updateBorrower(id,name,returnFlag,current)
+        }
+    }
+
     fun deleteBorrower(borrower:Borrower) {
         viewModelScope.launch(Dispatchers.IO) {
+            dataStoreManager.saveCurrentUserId(0)
+            dataStoreManager.saveCurrentUserName("unknown")
             rootRepository.deleteBorrower(borrower)
         }
     }

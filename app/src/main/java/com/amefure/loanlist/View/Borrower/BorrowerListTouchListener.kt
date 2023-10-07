@@ -10,7 +10,7 @@ import com.amefure.loanlist.Models.Room.Borrower
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.runBlocking
 
-class BorrowerListTouchListener() : RecyclerView.SimpleOnItemTouchListener() {
+class BorrowerListTouchListener(private val viewModel: BorrowerListViewModel) : RecyclerView.SimpleOnItemTouchListener() {
     override fun onInterceptTouchEvent(rv: RecyclerView, e: MotionEvent): Boolean {
         // タッチイベントの処理
         if (e.action == MotionEvent.ACTION_DOWN) {
@@ -25,8 +25,11 @@ class BorrowerListTouchListener() : RecyclerView.SimpleOnItemTouchListener() {
                         if (tappedItem != null) {
                             val dataStoreManager = DataStoreManager(rv.context)
                             runBlocking {
+                                // タッチされたアイテムをアクティブにする
                                 dataStoreManager.saveCurrentUserId(tappedItem.id.toInt())
                                 dataStoreManager.saveCurrentUserName(tappedItem.name.toString())
+                                // データを変更することでRecyclerViewも更新される
+                                viewModel.updateBorrower(tappedItem.id,tappedItem.name,tappedItem.returnFlag,true)
                             }
                         }
                     }
