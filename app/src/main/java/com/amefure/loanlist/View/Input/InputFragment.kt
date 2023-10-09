@@ -86,13 +86,14 @@ class InputFragment : Fragment() {
 
         borrowButton.setOnClickListener {
             isBorrow = true
-            val colorValue = ContextCompat.getColor(requireContext(), R.color.thema1)
-            amountText.setBackgroundColor(colorValue)
+
+            amountText.backgroundTintList =
+                ContextCompat.getColorStateList(this.requireContext(), R.color.thema1)
         }
         loanButton.setOnClickListener {
             isBorrow = false
-            val colorValue = ContextCompat.getColor(requireContext(), R.color.thema2)
-            amountText.setBackgroundColor(colorValue)
+            amountText.backgroundTintList =
+                ContextCompat.getColorStateList(this.requireContext(), R.color.thema2)
         }
 
         // DatePickerの値が変化したときに呼び出されるリスナーを設定

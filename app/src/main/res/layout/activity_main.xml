@@ -63,7 +63,7 @@
         android:id="@+id/name_buttnon"
         android:layout_width="160dp"
         android:layout_height="30dp"
-        android:background="@drawable/name_button_design"
+        android:background="@drawable/radius_square"
         android:paddingLeft="0dp"
         android:paddingTop="0dp"
         android:paddingRight="0dp"

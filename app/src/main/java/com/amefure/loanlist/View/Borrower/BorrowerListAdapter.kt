@@ -49,7 +49,15 @@ class BorrowerListAdapter (private val viewModel: BorrowerListViewModel, borrowe
         return item
     }
 
-     public fun deleteItem(position: Int) {
+     public fun updateItem(position: Int) {
+        if (position < 0 || position >= _borrowerList.size) {
+            return
+        }
+        val item = _borrowerList[position]
+        viewModel.updateBorrower(item.id,item.name,item.returnFlag,item.current)
+        notifyItemChanged(position)
+    }
+    public fun deleteItem(position: Int) {
         if (position < 0 || position >= _borrowerList.size) {
             return
         }
