@@ -12,14 +12,14 @@ import com.amefure.loanlist.R
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 class BorrowerListAdapter (private val viewModel: BorrowerListViewModel, borrowerList: List<Borrower>) :RecyclerView.Adapter<BorrowerListAdapter.MainViewHolder>(){
-    private val _borrowerList: MutableList<Borrower> = borrowerList.toMutableList()
+    private var _borrowerList: MutableList<Borrower> = borrowerList.toMutableList()
 
     override fun getItemCount(): Int = _borrowerList.size
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
+//        Log.e("------",_borrowerList.toString())
         return MainViewHolder(
-
             LayoutInflater.from(parent.context).inflate(R.layout.fragment_borrower_list_item, parent, false)
         )
     }
@@ -30,9 +30,9 @@ class BorrowerListAdapter (private val viewModel: BorrowerListViewModel, borrowe
         holder.borrower.text = borrower.name
         holder.amount.text = "" // borrower.id.toString()
         if (borrower.returnFlag) {
-            holder.returnFlagImage.setImageResource(R.drawable.user_flag)
+            holder.returnFlagImage.setImageResource(R.drawable.user_check_flag)
         } else {
-            holder.returnFlagImage.setImageResource(R.drawable.user_done_flag)
+            holder.returnFlagImage.setImageResource(R.drawable.user_flag)
         }
         if (holder.getCurrentBorrowerId() == borrower.id) {
             holder.activeFlagImage.setImageResource(R.drawable.check_button)
@@ -49,12 +49,33 @@ class BorrowerListAdapter (private val viewModel: BorrowerListViewModel, borrowe
         return item
     }
 
-     public fun updateItem(position: Int) {
+    // Borrowerがスワイプされた時にUIが残留しないように明示的に更新するための処理
+     public fun notifyItemUpdateView(position: Int) {
         if (position < 0 || position >= _borrowerList.size) {
             return
         }
         val item = _borrowerList[position]
         viewModel.updateBorrower(item.id,item.name,item.returnFlag,item.current)
+        notifyItemChanged(position)
+    }
+
+    public fun updateItem(position: Int){
+        if (position < 0 || position >= _borrowerList.size) {
+            return
+        }
+        var item = _borrowerList[position]
+        item.returnFlag = !item.returnFlag
+        _borrowerList[position] = item
+        viewModel.updateBorrower(item.id, item.name, item.returnFlag, item.current)
+        notifyItemChanged(position)
+    }
+
+    public fun updateItem2(position: Int , name:String, returnFlag: Boolean , current: Boolean){
+        if (position < 0 || position >= _borrowerList.size) {
+            return
+        }
+        val item = _borrowerList[position]
+        viewModel.updateBorrower(item.id, name, !returnFlag, current)
         notifyItemChanged(position)
     }
     public fun deleteItem(position: Int) {

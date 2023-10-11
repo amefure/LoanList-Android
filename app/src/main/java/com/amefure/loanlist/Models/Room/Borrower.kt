@@ -9,7 +9,8 @@ data class Borrower (
     @PrimaryKey(autoGenerate = true)
     val id: Int,
     val name: String,
-    @ColumnInfo(name = "return_flag") val returnFlag: Boolean,
+    // varで定義 リサイクルビューで変更するため
+    @ColumnInfo(name = "return_flag") var returnFlag: Boolean,
     // アプリ内でアクティブになる借主
     val current: Boolean
 ){

@@ -6,8 +6,10 @@ import android.content.ClipData.Item
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
+import android.util.Log
 import androidx.annotation.ColorRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
@@ -15,6 +17,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.amefure.loanlist.R
 import com.amefure.loanlist.View.Borrower.BorrowerListAdapter
+import kotlin.math.log
 
 class BorrowerListSwipeToDeleteCallback(private val adapter: BorrowerListAdapter) : ItemTouchHelper.SimpleCallback(
     ItemTouchHelper.ACTION_STATE_IDLE, // ドラッグアンドドロップをサポートしない場合は0
@@ -45,7 +48,8 @@ class BorrowerListSwipeToDeleteCallback(private val adapter: BorrowerListAdapter
                 .setNegativeButton("キャンセル", { dialog, which ->
                     // キャンセル
                     val position = viewHolder.adapterPosition
-                    adapter.updateItem(position)
+                    // Viewのみ更新する
+                    adapter.notifyItemUpdateView(position)
                 })
                 .show()
 
@@ -77,6 +81,10 @@ class BorrowerListSwipeToDeleteCallback(private val adapter: BorrowerListAdapter
         val colorValue = ContextCompat.getColor(recyclerView.context, R.color.thema1)
         val returnBackGround: ColorDrawable = ColorDrawable(colorValue)
 
+        val colorValue2 = ContextCompat.getColor(recyclerView.context, R.color.thema6)
+        val returnBackGround2: ColorDrawable = ColorDrawable(colorValue2)
+
+
         // スワイプ時のアイコンを定義AppCompatResources
         val deleteIcon: Drawable? = AppCompatResources.getDrawable(recyclerView.context,R.drawable.delete)
 
@@ -89,12 +97,29 @@ class BorrowerListSwipeToDeleteCallback(private val adapter: BorrowerListAdapter
 
             when {
                 dX > 0 -> { // 右方向へのスワイプ
-                    val iconLeft = itemView.left + iconMargin
-                    val iconRight = itemView.left + iconMargin + deleteIcon.intrinsicWidth
-                    deleteIcon.setBounds(iconLeft, iconTop, iconRight, iconBottom)
-                    returnBackGround.setBounds(itemView.left, itemView.top, itemView.left + dX.toInt(), itemView.bottom)
-                    returnBackGround.draw(canvas)
-                    deleteIcon.draw(canvas)
+
+                    var item = adapter.getItemAtPosition(viewHolder.adapterPosition)
+                    var text = ""
+                    if (item != null) {
+                        if (item.returnFlag) {
+                            text = "未返済にする"
+                            returnBackGround2.setBounds(itemView.left, itemView.top, itemView.left + dX.toInt(), itemView.bottom)
+                            returnBackGround2.draw(canvas)
+                        } else {
+                            text = "返済済みにする"
+                            returnBackGround.setBounds(itemView.left, itemView.top, itemView.left + dX.toInt(), itemView.bottom)
+                            returnBackGround.draw(canvas)
+                        }
+                    }
+
+                    val paint = Paint()
+                    paint.color = Color.WHITE
+                    paint.textSize = 40f
+                    val textLeft = itemView.left + iconMargin
+                    val centerY = itemView.top + itemView.height / 2
+                    val textHeight = (paint.descent() + paint.ascent()) / 2
+                    val textY = centerY - textHeight
+                    canvas.drawText(text, textLeft.toFloat(), textY, paint)
                 }
                 dX < 0 -> { // 左方向へのスワイプ
                     val iconLeft = itemView.right - iconMargin - deleteIcon.intrinsicWidth
