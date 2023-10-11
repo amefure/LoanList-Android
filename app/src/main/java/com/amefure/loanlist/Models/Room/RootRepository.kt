@@ -38,17 +38,19 @@ class RootRepository (context: Context) {
             id = 0,
             name = name,
             returnFlag = false,
-            current = false
+            current = false,
+            amountSum = 0
         )
             borrowerDao.insertBorrower(borrower)
     }
 
-    public fun updateBorrower(id: Int, name:String, returnFlag: Boolean , current: Boolean) {
+    public fun updateBorrower(id: Int, name:String, returnFlag: Boolean , current: Boolean , amountSum: Int) {
         val borrower = Borrower(
             id = id,
             name = name,
             returnFlag = returnFlag,
-            current = current
+            current = current,
+            amountSum = amountSum
         )
         borrowerDao.updateBorrower(borrower)
     }

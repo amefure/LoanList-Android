@@ -1,6 +1,7 @@
 package com.amefure.loanlist.View.MonerRecords
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -18,6 +19,7 @@ class LoanListViewModel(app:Application):RootViewModel(app) {
         viewModelScope.launch (Dispatchers.IO) {  // データ取得はIOスレッドで
             rootRepository.loadMoneyRecords(currentId) {
                 // 日付の降順でソートをかけておく
+                Log.e("-----",currentId.toString())
                 _recordList.postValue(it.sortedBy { it.date }.reversed())  // 本来はDBやCacheから取得
             }
         }

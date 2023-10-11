@@ -18,7 +18,6 @@ class BorrowerListAdapter (private val viewModel: BorrowerListViewModel, borrowe
 
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
-//        Log.e("------",_borrowerList.toString())
         return MainViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.fragment_borrower_list_item, parent, false)
         )
@@ -26,9 +25,8 @@ class BorrowerListAdapter (private val viewModel: BorrowerListViewModel, borrowe
 
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
         val borrower = _borrowerList[position]
-
         holder.borrower.text = borrower.name
-        holder.amount.text = "" // borrower.id.toString()
+        holder.amount.text = borrower.amountSum.toString()
         if (borrower.returnFlag) {
             holder.returnFlagImage.setImageResource(R.drawable.user_check_flag)
         } else {
@@ -55,27 +53,29 @@ class BorrowerListAdapter (private val viewModel: BorrowerListViewModel, borrowe
             return
         }
         val item = _borrowerList[position]
-        viewModel.updateBorrower(item.id,item.name,item.returnFlag,item.current)
+        viewModel.updateBorrower(item.id,item.name,item.returnFlag,item.current, item.amountSum)
         notifyItemChanged(position)
     }
 
+    // リサイクルビューから返済フラグを更新
     public fun updateItem(position: Int){
         if (position < 0 || position >= _borrowerList.size) {
             return
         }
         var item = _borrowerList[position]
+        // 明示的に_borrowerListを更新しないとUIがスワイプのUIが変化しない
         item.returnFlag = !item.returnFlag
         _borrowerList[position] = item
-        viewModel.updateBorrower(item.id, item.name, item.returnFlag, item.current)
+        viewModel.updateBorrower(item.id, item.name, item.returnFlag, item.current, item.amountSum)
         notifyItemChanged(position)
     }
 
-    public fun updateItem2(position: Int , name:String, returnFlag: Boolean , current: Boolean){
+    public fun updateItem2(position: Int , name:String, returnFlag: Boolean , current: Boolean, amountSum: Int){
         if (position < 0 || position >= _borrowerList.size) {
             return
         }
         val item = _borrowerList[position]
-        viewModel.updateBorrower(item.id, name, !returnFlag, current)
+        viewModel.updateBorrower(item.id, name, !returnFlag, current, amountSum)
         notifyItemChanged(position)
     }
     public fun deleteItem(position: Int) {

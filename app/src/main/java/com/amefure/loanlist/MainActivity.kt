@@ -2,6 +2,7 @@ package com.amefure.loanlist
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
@@ -83,23 +84,19 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
                 commit()
             }
         }
-
-
-        if (currentId != null) {
-            // アクティブになっているBorrowerがある時のみレコードをセット
-            observedMoneyRecordsData(currentId as Int)
-        }
     }
 
     /// Borrowerに紐づくレコードデータをセット&観測
     private fun observedMoneyRecordsData(currentId:Int) {
-
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.addItemDecoration(
             DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         )
-        viewModel.recordList.observe(this) {
+        // 先に対象借主のリストを読み込む
+        viewModel.loadRecordItems(currentId as Int)
 
+        // 観測開始
+        viewModel.recordList.observe(this) {
             adapter = LoanListAdapter(viewModel, it)
 
             adapter.setOnBookCellClickListener(
@@ -123,14 +120,13 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
             )
             recyclerView.adapter = adapter
         }
-        viewModel.loadRecordItems(currentId)
     }
 
     /// アクティブになっているBorrowerIDを観測し変更があるたびにレコードデータを更新する
     private fun observeCurrentBorrowerId() {
         lifecycleScope.launch{
             dataStoreManager.observeCurrentUserId().collect {
-                currentId =  it
+                currentId = it
                 //　削除された際(IDが0)にはnullにする
                 if (currentId == 0) {
                     currentId = null

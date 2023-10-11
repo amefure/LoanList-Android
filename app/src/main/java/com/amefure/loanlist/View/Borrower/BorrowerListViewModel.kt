@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import com.amefure.loanlist.App
 import com.amefure.loanlist.Models.DataStore.DataStoreManager
 import com.amefure.loanlist.Models.Room.Borrower
+import com.amefure.loanlist.Models.Room.MoneyRecord
 import com.amefure.loanlist.RootViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,9 +35,9 @@ class BorrowerListViewModel(app: Application) : RootViewModel(app) {
         }
     }
 
-    fun updateBorrower(id: Int, name:String, returnFlag: Boolean , current: Boolean) {
+    fun updateBorrower(id: Int, name:String, returnFlag: Boolean ,current: Boolean, amountSum: Int) {
         viewModelScope.launch(Dispatchers.IO) {
-            rootRepository.updateBorrower(id,name,returnFlag,current)
+            rootRepository.updateBorrower(id,name,returnFlag,current, amountSum)
         }
     }
 

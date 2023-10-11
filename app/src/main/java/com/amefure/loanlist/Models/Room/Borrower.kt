@@ -3,6 +3,7 @@ package com.amefure.loanlist.Models.Room
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.time.temporal.TemporalAmount
 
 @Entity(tableName = "borrower_table")
 data class Borrower (
@@ -12,7 +13,9 @@ data class Borrower (
     // varで定義 リサイクルビューで変更するため
     @ColumnInfo(name = "return_flag") var returnFlag: Boolean,
     // アプリ内でアクティブになる借主
-    val current: Boolean
+    val current: Boolean,
+    // レコードの合計金額
+    val amountSum: Int
 ){
     companion object {
 
@@ -23,7 +26,8 @@ data class Borrower (
                     id = it,
                     name = "borrower $it",
                     returnFlag = false,
-                    current = false
+                    current = false,
+                    amountSum = 0
                 )
             }
         }

@@ -29,7 +29,12 @@ class BorrowerListTouchListener(private val viewModel: BorrowerListViewModel) : 
                                 dataStoreManager.saveCurrentUserId(tappedItem.id.toInt())
                                 dataStoreManager.saveCurrentUserName(tappedItem.name.toString())
                                 // データを変更することでRecyclerViewも更新される
-                                viewModel.updateBorrower(tappedItem.id,tappedItem.name,tappedItem.returnFlag,true)
+                                viewModel.updateBorrower(
+                                    tappedItem.id,
+                                    tappedItem.name,
+                                    tappedItem.returnFlag,
+                                    true,
+                                    tappedItem.amountSum)
                             }
                         }
                     }
