@@ -1,12 +1,15 @@
 package com.amefure.loanlist.Models.Room
 
 import android.content.Context
+import androidx.lifecycle.viewModelScope
 import androidx.room.Room
 import com.amefure.loanlist.Models.DataStore.DataStoreManager
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.time.temporal.TemporalAmount
 
@@ -102,6 +105,10 @@ class RootRepository (context: Context) {
 
     public fun deleteMoneyRecord(record:MoneyRecord) {
         recordDao.deleteMoneyRecord(record)
+    }
+
+    public fun deleteBorrowerAllMoneyRecord(id: Int) {
+        recordDao.deleteAllMoneyRecord(id)
     }
 
 

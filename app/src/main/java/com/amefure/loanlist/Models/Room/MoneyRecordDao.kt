@@ -18,6 +18,9 @@ interface MoneyRecordDao {
     @Delete
     fun deleteMoneyRecord(moneyRecord: MoneyRecord)
 
+    @Query("DELETE FROM record_table WHERE borrower_id = :borrowerId")
+    fun deleteAllMoneyRecord(borrowerId: Int)
+
     @Query("SELECT * FROM record_table WHERE borrower_id = :borrowerId")
     fun getAllRecordsForBorrower(borrowerId: Int): Flowable<List<MoneyRecord>>
 

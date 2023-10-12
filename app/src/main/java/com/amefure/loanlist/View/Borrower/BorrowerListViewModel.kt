@@ -44,8 +44,9 @@ class BorrowerListViewModel(app: Application) : RootViewModel(app) {
     fun deleteBorrower(borrower:Borrower) {
         viewModelScope.launch(Dispatchers.IO) {
             dataStoreManager.saveCurrentUserId(0)
-            dataStoreManager.saveCurrentUserName("unknown")
             rootRepository.deleteBorrower(borrower)
+            // 紐づいているレコードも全て削除
+            rootRepository.deleteBorrowerAllMoneyRecord(borrower.id)
         }
     }
 }

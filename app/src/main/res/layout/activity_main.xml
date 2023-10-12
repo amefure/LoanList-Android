@@ -12,15 +12,17 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:elevation="10dp"
-        />
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="0dp" />
 
     <TextView
         android:id="@+id/result_label"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="176dp"
-        android:text="TextView"
+        android:text="0円"
+        android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/sort_clear_button"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.454" />
@@ -114,6 +116,7 @@
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="30dp"
         android:layout_height="30dp"
+        android:layout_marginEnd="30dp"
         android:layout_marginBottom="20dp"
         android:contentDescription="Navigation Button"
         android:paddingLeft="0dp"
@@ -123,8 +126,6 @@
         android:src="@drawable/navigation_settings_button_design"
         app:layout_constraintBottom_toTopOf="@+id/loan_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.646"
-        app:layout_constraintStart_toEndOf="@+id/result_label"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.687" />
 

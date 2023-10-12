@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -21,6 +22,7 @@ import com.amefure.loanlist.View.MonerRecords.LoanListViewModel
 import com.amefure.loanlist.View.Settings.SettingsFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import kotlinx.coroutines.launch
+import kotlin.math.abs
 
 class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
     override fun onDeleteClick(id: Int) {
@@ -44,9 +46,11 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
 
         recyclerView = findViewById(R.id.loan_list)
 
+        viewModel.loadBorrowerItems()
+
         // 選択されているBorrowerの変更を観測する
         observeCurrentBorrowerId()
-        observeCurrentBorrowerName()
+        observeCurrentBorrower()
 
         val actionBtn: FloatingActionButton = findViewById(R.id.floating_action_button)
         actionBtn.setOnClickListener {
@@ -122,6 +126,7 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
         }
     }
 
+    /// ローカルに保存されている
     /// アクティブになっているBorrowerIDを観測し変更があるたびにレコードデータを更新する
     private fun observeCurrentBorrowerId() {
         lifecycleScope.launch{
@@ -139,12 +144,30 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
         }
     }
 
-    /// アクティブになっているBorrowerNameを観測し変更があるたびにNameButtonを更新する
-    private fun observeCurrentBorrowerName() {
-        val nameBtn: Button = findViewById(R.id.name_buttnon)
-        lifecycleScope.launch{
-            dataStoreManager.observeCurrentUserName().collect {
-                nameBtn.text =  it.toString()
+    // ローカルに保存されているアクティブIDを元に
+    // 借主情報を取得&UI反映
+    private fun observeCurrentBorrower() {
+        viewModel.borrowerList.observe(this) {
+            val resultLabel: TextView = findViewById(R.id.result_label)
+            val nameBtn: Button = findViewById(R.id.name_buttnon)
+
+            if (it.size != 0 && currentId != null) {
+
+                // 合計金額をセット
+                val result = it.first { it.id == currentId }.amountSum
+                if (result < 0) {
+                    resultLabel.setText("-" + "%,d".format(abs(result)) + "円")
+                } else {
+                    resultLabel.setText("+" + "%,d".format(result) + "円")
+                }
+
+                // 名前をセット
+                val name = it.first { it.id == currentId }.name
+                nameBtn.setText(name)
+            } else {
+                resultLabel.setText("0円")
+                nameBtn.setText("unknown")
+                // レコードの削除はBorrower削除時に実行ずみ
             }
         }
     }

@@ -27,7 +27,6 @@ class BorrowerListTouchListener(private val viewModel: BorrowerListViewModel) : 
                             runBlocking {
                                 // タッチされたアイテムをアクティブにする
                                 dataStoreManager.saveCurrentUserId(tappedItem.id.toInt())
-                                dataStoreManager.saveCurrentUserName(tappedItem.name.toString())
                                 // データを変更することでRecyclerViewも更新される
                                 viewModel.updateBorrower(
                                     tappedItem.id,
