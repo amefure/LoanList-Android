@@ -26,7 +26,7 @@ class BorrowerListAdapter (private val viewModel: BorrowerListViewModel, borrowe
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
         val borrower = _borrowerList[position]
         holder.borrower.text = borrower.name
-        holder.amount.text = borrower.amountSum.toString()
+        holder.amount.text = "%,d".format(borrower.amountSum) + "円"
         if (borrower.returnFlag) {
             holder.returnFlagImage.setImageResource(R.drawable.user_check_flag)
         } else {
@@ -70,7 +70,7 @@ class BorrowerListAdapter (private val viewModel: BorrowerListViewModel, borrowe
         notifyItemChanged(position)
     }
 
-    public fun updateItem2(position: Int , name:String, returnFlag: Boolean , current: Boolean, amountSum: Int){
+    public fun updateItem2(position: Int , name:String, returnFlag: Boolean , current: Boolean, amountSum: Long){
         if (position < 0 || position >= _borrowerList.size) {
             return
         }

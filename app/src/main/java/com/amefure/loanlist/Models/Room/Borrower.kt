@@ -15,7 +15,7 @@ data class Borrower (
     // アプリ内でアクティブになる借主
     val current: Boolean,
     // レコードの合計金額
-    val amountSum: Int
+    val amountSum: Long
 ){
     companion object {
 

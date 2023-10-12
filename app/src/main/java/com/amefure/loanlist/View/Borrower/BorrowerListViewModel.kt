@@ -35,7 +35,7 @@ class BorrowerListViewModel(app: Application) : RootViewModel(app) {
         }
     }
 
-    fun updateBorrower(id: Int, name:String, returnFlag: Boolean ,current: Boolean, amountSum: Int) {
+    fun updateBorrower(id: Int, name:String, returnFlag: Boolean ,current: Boolean, amountSum: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             rootRepository.updateBorrower(id,name,returnFlag,current, amountSum)
         }

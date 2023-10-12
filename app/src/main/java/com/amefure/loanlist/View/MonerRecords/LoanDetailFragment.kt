@@ -51,7 +51,7 @@ class LoanDetailFragment : Fragment() {
         val dateLabel:TextView = view.findViewById(R.id.date_label)
         val backImg:ImageView = view.findViewById(R.id.back_image)
         val memoLabel:TextView = view.findViewById(R.id.memo_text)
-        amountLabel.setText("%,d".format(amount.toInt()) + "円")
+        amountLabel.setText("%,d".format(amount.toLong()) + "円")
         dateLabel.setText(date)
         memoLabel.setText(memo)
 
