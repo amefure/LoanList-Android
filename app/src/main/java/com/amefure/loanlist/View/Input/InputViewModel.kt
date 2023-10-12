@@ -40,6 +40,8 @@ class InputViewModel(app:Application):RootViewModel(app) {
         }
     }
 
+
+    // レコードを登録した際に借主のsumプロパティの値も更新
     private fun addAmount(currentId: Int, amount: Long, borrow: Boolean ) {
         var borrower = _borrowerList.value?.first { it.id == currentId }
         if (borrower != null) {
@@ -49,7 +51,7 @@ class InputViewModel(app:Application):RootViewModel(app) {
             } else {
                 sum = borrower.amountSum - amount
             }
-
+            // 借主のsumプロパティの値も更新
             viewModelScope.launch(Dispatchers.IO) {
                 rootRepository.updateBorrower(
                     borrower.id,
@@ -60,6 +62,5 @@ class InputViewModel(app:Application):RootViewModel(app) {
                 )
             }
         }
-
     }
 }

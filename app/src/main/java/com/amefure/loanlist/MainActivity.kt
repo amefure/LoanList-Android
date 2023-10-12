@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
     // アクティブになるBorrowerID
     private var currentId: Int? = null
     private var amountMarkFlag: Boolean = true
-    private var result: Long = 0
+    private var sumAmount: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -148,30 +148,31 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
     }
 
     // ローカルに保存されているアクティブIDを元に
-    // 借主情報を取得&UI反映
+    // 借主情報をの変更を観測&UI反映
     private fun observeCurrentBorrower() {
         viewModel.borrowerList.observe(this) {
-            val resultLabel: TextView = findViewById(R.id.sum_amount_label)
+            val sumAmountLabel: TextView = findViewById(R.id.sum_amount_label)
             val nameBtn: Button = findViewById(R.id.name_buttnon)
 
             if (it.size != 0 && currentId != null) {
 
                 // 合計金額をセット
-                result = it.first { it.id == currentId }.amountSum
+                sumAmount = it.first { it.id == currentId }.amountSum
                 // ラベルを更新
-                setJudgeSumAmountLabel(result)
+                setJudgeSumAmountLabel(sumAmount)
 
                 // 名前をセット
                 val name = it.first { it.id == currentId }.name
                 nameBtn.setText(name)
             } else {
-                resultLabel.setText("0円")
+                sumAmountLabel.setText("0円")
                 nameBtn.setText("unknown")
                 // レコードの削除はBorrower削除時に実行ずみ
             }
         }
     }
 
+    // 設定画面から+/-の変更を押されたことを検知する
     private fun observeAmountMark() {
         lifecycleScope.launch{
             dataStoreManager.observeAmountMark().collect {
@@ -180,27 +181,27 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
                 } else {
                     amountMarkFlag = false
                 }
-                setJudgeSumAmountLabel(result)
+                setJudgeSumAmountLabel(sumAmount)
             }
         }
     }
 
     // レコードの合計金額ラベルをセットする
     private fun setJudgeSumAmountLabel(result: Long) {
-        val resultLabel: TextView = findViewById(R.id.sum_amount_label)
+        val sumAmountLabel: TextView = findViewById(R.id.sum_amount_label)
         if (result < 0) {
             // マイナス値
             if (amountMarkFlag) {
-                resultLabel.setText("-" + "%,d".format(abs(result)) + "円")
+                sumAmountLabel.setText("-" + "%,d".format(abs(result)) + "円")
             } else {
-                resultLabel.setText("+" + "%,d".format(abs(result)) + "円")
+                sumAmountLabel.setText("+" + "%,d".format(abs(result)) + "円")
             }
         } else {
             // プラス値
             if (amountMarkFlag) {
-                resultLabel.setText("+" + "%,d".format(result) + "円")
+                sumAmountLabel.setText("+" + "%,d".format(result) + "円")
             } else {
-                resultLabel.setText("-" + "%,d".format(result) + "円")
+                sumAmountLabel.setText("-" + "%,d".format(result) + "円")
             }
         }
     }

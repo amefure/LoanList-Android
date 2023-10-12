@@ -33,20 +33,39 @@ class LoanListViewModel(app:Application):RootViewModel(app) {
         viewModelScope.launch (Dispatchers.IO) {  // データ取得はIOスレッドで
             rootRepository.loadMoneyRecords(currentId) {
                 // 日付の降順でソートをかけておく
+                Log.e("--------",currentId.toString())
                 _recordList.postValue(it.sortedBy { it.date }.reversed())  // 本来はDBやCacheから取得
             }
         }
     }
-
-    fun registerMoneyRecord(currentId:Int,amount: Long,desc:String,borrow:Boolean,date:String) {
+    public fun deleteMoneyRecord(record: MoneyRecord) {
+        // 削除された際に借主のsumプロパティも操作する
+        subAmount(record.borrowerId, record.amount ,record.borrow)
         viewModelScope.launch(Dispatchers.IO) {
-            rootRepository.insertMoneyRecord(currentId,amount,desc,borrow,date)
+            rootRepository.deleteMoneyRecord(record)
         }
     }
 
-    fun deleteMoneyRecord(record: MoneyRecord) {
-        viewModelScope.launch(Dispatchers.IO) {
-            rootRepository.deleteMoneyRecord(record)
+    // レコードを登録した際に借主のsumプロパティの値も更新
+    private fun subAmount(currentId: Int, amount: Long, borrow: Boolean ) {
+        var borrower = _borrowerList.value?.first { it.id == currentId }
+        if (borrower != null) {
+            var sum:Long = 0
+            if (borrow) {
+                sum = borrower.amountSum - amount
+            } else {
+                sum = borrower.amountSum + amount
+            }
+            // 借主のsumプロパティの値も更新
+            viewModelScope.launch(Dispatchers.IO) {
+                rootRepository.updateBorrower(
+                    borrower.id,
+                    borrower.name,
+                    borrower.returnFlag,
+                    borrower.current,
+                    sum
+                )
+            }
         }
     }
 }
