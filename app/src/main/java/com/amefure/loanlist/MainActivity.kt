@@ -2,7 +2,6 @@ package com.amefure.loanlist
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
@@ -40,6 +39,9 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
 
     // アクティブになるBorrowerID
     private var currentId: Int? = null
+    private var amountMarkFlag: Boolean = true
+    private var result: Long = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -51,6 +53,7 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
         // 選択されているBorrowerの変更を観測する
         observeCurrentBorrowerId()
         observeCurrentBorrower()
+        observeAmountMark()
 
         val actionBtn: FloatingActionButton = findViewById(R.id.floating_action_button)
         actionBtn.setOnClickListener {
@@ -148,18 +151,15 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
     // 借主情報を取得&UI反映
     private fun observeCurrentBorrower() {
         viewModel.borrowerList.observe(this) {
-            val resultLabel: TextView = findViewById(R.id.result_label)
+            val resultLabel: TextView = findViewById(R.id.sum_amount_label)
             val nameBtn: Button = findViewById(R.id.name_buttnon)
 
             if (it.size != 0 && currentId != null) {
 
                 // 合計金額をセット
-                val result = it.first { it.id == currentId }.amountSum
-                if (result < 0) {
-                    resultLabel.setText("-" + "%,d".format(abs(result)) + "円")
-                } else {
-                    resultLabel.setText("+" + "%,d".format(result) + "円")
-                }
+                result = it.first { it.id == currentId }.amountSum
+                // ラベルを更新
+                setJudgeSumAmountLabel(result)
 
                 // 名前をセット
                 val name = it.first { it.id == currentId }.name
@@ -168,6 +168,39 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
                 resultLabel.setText("0円")
                 nameBtn.setText("unknown")
                 // レコードの削除はBorrower削除時に実行ずみ
+            }
+        }
+    }
+
+    private fun observeAmountMark() {
+        lifecycleScope.launch{
+            dataStoreManager.observeAmountMark().collect {
+                if (it == null || it == "借") {
+                    amountMarkFlag = true
+                } else {
+                    amountMarkFlag = false
+                }
+                setJudgeSumAmountLabel(result)
+            }
+        }
+    }
+
+    // レコードの合計金額ラベルをセットする
+    private fun setJudgeSumAmountLabel(result: Long) {
+        val resultLabel: TextView = findViewById(R.id.sum_amount_label)
+        if (result < 0) {
+            // マイナス値
+            if (amountMarkFlag) {
+                resultLabel.setText("-" + "%,d".format(abs(result)) + "円")
+            } else {
+                resultLabel.setText("+" + "%,d".format(abs(result)) + "円")
+            }
+        } else {
+            // プラス値
+            if (amountMarkFlag) {
+                resultLabel.setText("+" + "%,d".format(result) + "円")
+            } else {
+                resultLabel.setText("-" + "%,d".format(result) + "円")
             }
         }
     }

@@ -73,6 +73,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text="借"
+        android:checked="true"
         app:layout_constraintEnd_toEndOf="@+id/view"
         app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toEndOf="@+id/textView2"
