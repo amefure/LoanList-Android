@@ -19,6 +19,7 @@
         android:id="@+id/sum_amount_label"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
         android:text="0円"
         android:textAlignment="center"
         app:layout_constraintBottom_toTopOf="@+id/sort_clear_button"
@@ -91,16 +92,36 @@
         android:src="@drawable/sort_button_design"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.32"
+        app:layout_constraintStart_toEndOf="@+id/sort_clear_button"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.46" />
+
+    <Spinner
+        android:id="@+id/sort_spinner"
+        style="?android:attr/borderlessButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:contentDescription="Sort Button"
+        android:paddingLeft="0dp"
+        android:paddingTop="0dp"
+        android:paddingRight="0dp"
+        android:paddingBottom="0dp"
+        android:src="@drawable/sort_button_design"
+        app:layout_constraintBottom_toTopOf="@+id/guideline2"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.223"
         app:layout_constraintStart_toEndOf="@+id/sort_clear_button"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.46" />
+
 
     <ImageButton
         android:id="@+id/sort_clear_button"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="30dp"
         android:layout_height="30dp"
+        android:layout_marginBottom="20dp"
         android:contentDescription="Sort Clear Button"
         android:paddingLeft="0dp"
         android:paddingTop="0dp"

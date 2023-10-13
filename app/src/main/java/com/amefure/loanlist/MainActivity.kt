@@ -2,16 +2,22 @@ package com.amefure.loanlist
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.View
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.amefure.loanlist.Models.DataStore.DataStoreManager
+import com.amefure.loanlist.Models.DataStore.SortItem
 import com.amefure.loanlist.Models.Room.MoneyRecord
 import com.amefure.loanlist.View.Borrower.BorrowerListFragment
 import com.amefure.loanlist.View.Input.InputFragment
@@ -39,7 +45,9 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
 
     // アクティブになるBorrowerID
     private var currentId: Int? = null
+    // 設定画面のスイッチで変更されるフラグ
     private var amountMarkFlag: Boolean = true
+    // レコードの合計金額保持用
     private var sumAmount: Long = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,12 +56,18 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
 
         recyclerView = findViewById(R.id.loan_list)
 
+        // 借主一覧を取得
+        // IDはローカルに保存しているが名前と合計は保存していないのでDBから取得する
         viewModel.loadBorrowerItems()
 
-        // 選択されているBorrowerの変更を観測する
+        // 選択されているBorrowerの変更を観測する(ローカル)
         observeCurrentBorrowerId()
+        // 借主情報の変更を観測&UI反映
         observeCurrentBorrower()
+        // 設定画面のスイッチの値を観測
         observeAmountMark()
+        // SortItemを観測
+        observeSortItem()
 
         val actionBtn: FloatingActionButton = findViewById(R.id.floating_action_button)
         actionBtn.setOnClickListener {
@@ -91,6 +105,23 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
                 commit()
             }
         }
+
+        val sortBtn:ImageButton = findViewById(R.id.sort_button)
+        val spinner:Spinner = findViewById(R.id.sort_spinner)
+        spinner.visibility = View.GONE
+        sortBtn.setOnClickListener {
+            spinner.visibility = View.VISIBLE
+            sortBtn.visibility = View.GONE
+        }
+
+        val spinnerAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item)
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        SortItem.values().forEach {
+            spinnerAdapter.add(it.message())
+        }
+        spinner.adapter = spinnerAdapter
+        spinner.onItemSelectedListener = spinnerAdapterListener
+
     }
 
     /// Borrowerに紐づくレコードデータをセット&観測
@@ -129,8 +160,9 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
         }
     }
 
-    /// ローカルに保存されている
-    /// アクティブになっているBorrowerIDを観測し変更があるたびにレコードデータを更新する
+    // ローカルに保存されている
+    // アクティブになっているBorrowerIDを観測し変更があるたびにレコードデータを更新する
+    // 借主リスト画面で新しく選択された時に発火
     private fun observeCurrentBorrowerId() {
         lifecycleScope.launch{
             dataStoreManager.observeCurrentUserId().collect {
@@ -148,21 +180,25 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
     }
 
     // ローカルに保存されているアクティブIDを元に
-    // 借主情報をの変更を観測&UI反映
+    // 借主情報の変更を観測&UI反映
+    // 借主リスト画面で新しく選択された時に発火
     private fun observeCurrentBorrower() {
         viewModel.borrowerList.observe(this) {
             val sumAmountLabel: TextView = findViewById(R.id.sum_amount_label)
             val nameBtn: Button = findViewById(R.id.name_buttnon)
 
+            val dataStoreManager = DataStoreManager(this)
+
             if (it.size != 0 && currentId != null) {
+                var currentBorrower = it.first { it.id == currentId }
 
                 // 合計金額をセット
-                sumAmount = it.first { it.id == currentId }.amountSum
+                sumAmount = currentBorrower.amountSum
                 // ラベルを更新
                 setJudgeSumAmountLabel(sumAmount)
 
                 // 名前をセット
-                val name = it.first { it.id == currentId }.name
+                val name = currentBorrower.name
                 nameBtn.setText(name)
             } else {
                 sumAmountLabel.setText("0円")
@@ -205,4 +241,51 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
             }
         }
     }
+
+    private fun observeSortItem() {
+        lifecycleScope.launch {
+            dataStoreManager.observeSortItem().collect {
+                val spinner:Spinner = findViewById(R.id.sort_spinner)
+                when (it) {
+                    SortItem.AMOUNT_ASCE.name -> {
+                        spinner.setSelection(0)
+                    }
+                    SortItem.AMOUNT_DESC.name  -> {
+                        spinner.setSelection(1)
+                    }
+                    SortItem.DATE_ASCE.name  -> {
+                        spinner.setSelection(2)
+                    }
+                    SortItem.DATE_DESC.name  -> {
+                        spinner.setSelection(3)
+                    }
+                    SortItem.BORROW_ONLY.name  -> {
+                        spinner.setSelection(4)
+                    }
+                    SortItem.LOAN_ONLY.name  -> {
+                        spinner.setSelection(5)
+                    }
+                    else -> {
+                        spinner.setSelection(5)
+                    }
+                }
+            }
+        }
+    }
+
+    // スピナーがタップ
+    private val spinnerAdapterListener = object : AdapterView.OnItemSelectedListener {
+        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            // 選択された時に実行したい処理
+            var sortClearbtn: ImageButton = findViewById(R.id.sort_clear_button)
+            lifecycleScope.launch {
+                dataStoreManager.saveSortItem(SortItem.values()[position].name)
+                sortClearbtn.imageTintList = ContextCompat.getColorStateList(view!!.context, R.color.thema1)
+
+            }
+        }
+        override fun onNothingSelected(parent: AdapterView<*>?) {}
+    }
 }
+
+
