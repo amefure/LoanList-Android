@@ -9,17 +9,20 @@ enum class SortItem {
     AMOUNT_DESC {
         override fun message():String = "金額(降順)"
     },
-    DATE_ASCE{
+    DATE_ASCE {
         override fun message():String = "日付(昇順)"
     },
-    DATE_DESC{
+    DATE_DESC {
         override fun message():String = "日付(降順)"
     },
-    BORROW_ONLY{
+    BORROW_ONLY {
         override fun message():String = "借のみ"
     },
-    LOAN_ONLY{
+    LOAN_ONLY {
         override fun message():String = "貸しのみ"
+    },
+    NONE {
+        override fun message():String = "NONE"
     };
     abstract fun message(): String
 }

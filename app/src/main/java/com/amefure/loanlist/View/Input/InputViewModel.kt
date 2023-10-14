@@ -12,9 +12,6 @@ import kotlinx.coroutines.launch
 
 class InputViewModel(app:Application):RootViewModel(app) {
 
-//    private val _loanList = MutableLiveData<List<MoneyRecord>>()
-//    val loanList: LiveData<List<MoneyRecord>> = _loanList
-
     private val _borrowerList = MutableLiveData<List<Borrower>>()
     public val borrowerList: LiveData<List<Borrower>> = _borrowerList
 

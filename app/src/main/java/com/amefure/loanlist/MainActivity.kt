@@ -49,6 +49,8 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
     private var amountMarkFlag: Boolean = true
     // レコードの合計金額保持用
     private var sumAmount: Long = 0
+    // SortItem
+    private var sortItem: SortItem = SortItem.NONE
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,6 +110,18 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
 
         val sortBtn:ImageButton = findViewById(R.id.sort_button)
         val spinner:Spinner = findViewById(R.id.sort_spinner)
+        val sortClearbtn: ImageButton = findViewById(R.id.sort_clear_button)
+        sortClearbtn.setOnClickListener {
+            // ソートをクリアー
+            sortClearbtn.imageTintList = ContextCompat.getColorStateList(this, R.color.systemColor)
+            lifecycleScope.launch {
+                // デフォルトに戻す
+                dataStoreManager.saveSortItem(SortItem.NONE.name)
+            }
+            spinner.visibility = View.GONE
+            sortBtn.visibility = View.VISIBLE
+        }
+
         spinner.visibility = View.GONE
         sortBtn.setOnClickListener {
             spinner.visibility = View.VISIBLE
@@ -117,7 +131,10 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
         val spinnerAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item)
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         SortItem.values().forEach {
-            spinnerAdapter.add(it.message())
+            // NONEはスピナーの対象外
+            if (it != SortItem.NONE) {
+                spinnerAdapter.add(it.message())
+            }
         }
         spinner.adapter = spinnerAdapter
         spinner.onItemSelectedListener = spinnerAdapterListener
@@ -130,8 +147,6 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
         recyclerView.addItemDecoration(
             DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         )
-        // 先に対象借主のリストを読み込む
-        viewModel.loadRecordItems(currentId as Int)
 
         // 観測開始
         viewModel.recordList.observe(this) {
@@ -187,8 +202,6 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
             val sumAmountLabel: TextView = findViewById(R.id.sum_amount_label)
             val nameBtn: Button = findViewById(R.id.name_buttnon)
 
-            val dataStoreManager = DataStoreManager(this)
-
             if (it.size != 0 && currentId != null) {
                 var currentBorrower = it.first { it.id == currentId }
 
@@ -242,6 +255,8 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
         }
     }
 
+    // SortItemの値の変化を観測
+    // 対象のSortがかかったレコードリストの読み込みを開始
     private fun observeSortItem() {
         lifecycleScope.launch {
             dataStoreManager.observeSortItem().collect {
@@ -249,28 +264,52 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
                 when (it) {
                     SortItem.AMOUNT_ASCE.name -> {
                         spinner.setSelection(0)
+                        viewModel.loadRecordItemsSorted(currentId as Int, SortItem.AMOUNT_ASCE)
+                        activeSortModeUI()
                     }
                     SortItem.AMOUNT_DESC.name  -> {
                         spinner.setSelection(1)
+                        viewModel.loadRecordItemsSorted(currentId as Int, SortItem.AMOUNT_DESC)
+                        activeSortModeUI()
                     }
                     SortItem.DATE_ASCE.name  -> {
                         spinner.setSelection(2)
+                        viewModel.loadRecordItemsSorted(currentId as Int, SortItem.DATE_ASCE)
+                        activeSortModeUI()
                     }
                     SortItem.DATE_DESC.name  -> {
                         spinner.setSelection(3)
+                        viewModel.loadRecordItemsSorted(currentId as Int, SortItem.DATE_DESC)
+                        activeSortModeUI()
                     }
                     SortItem.BORROW_ONLY.name  -> {
                         spinner.setSelection(4)
+                        viewModel.loadRecordItemsSorted(currentId as Int, SortItem.BORROW_ONLY)
+                        activeSortModeUI()
                     }
                     SortItem.LOAN_ONLY.name  -> {
                         spinner.setSelection(5)
+                        viewModel.loadRecordItemsSorted(currentId as Int, SortItem.LOAN_ONLY)
+                        activeSortModeUI()
                     }
                     else -> {
                         spinner.setSelection(5)
+                        viewModel.loadRecordItemsSorted(currentId as Int, SortItem.NONE)
                     }
                 }
             }
         }
+    }
+
+    // Sortが有効になっている場合にUIを調整
+    private fun activeSortModeUI() {
+        val sortBtn:ImageButton = findViewById(R.id.sort_button)
+        val spinner:Spinner = findViewById(R.id.sort_spinner)
+        val sortClearbtn: ImageButton = findViewById(R.id.sort_clear_button)
+
+        sortBtn.visibility = View.GONE
+        spinner.visibility = View.VISIBLE
+        sortClearbtn.imageTintList = ContextCompat.getColorStateList(sortClearbtn.context, R.color.thema1)
     }
 
     // スピナーがタップ
@@ -280,8 +319,7 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
             var sortClearbtn: ImageButton = findViewById(R.id.sort_clear_button)
             lifecycleScope.launch {
                 dataStoreManager.saveSortItem(SortItem.values()[position].name)
-                sortClearbtn.imageTintList = ContextCompat.getColorStateList(view!!.context, R.color.thema1)
-
+                sortItem = SortItem.values()[position]
             }
         }
         override fun onNothingSelected(parent: AdapterView<*>?) {}
