@@ -26,6 +26,7 @@ import com.amefure.loanlist.View.MonerRecords.LoanListAdapter
 import com.amefure.loanlist.View.MonerRecords.LoanListViewModel
 import com.amefure.loanlist.View.Settings.SettingsFragment
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
@@ -71,23 +72,29 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
         // SortItemを観測
         observeSortItem()
 
+        // レコード追加ボタン
         val actionBtn: FloatingActionButton = findViewById(R.id.floating_action_button)
         actionBtn.setOnClickListener {
             if (currentId != null) {
                 // Borrowerが設定されていれば
                 // Input画面へ遷移
+                var nextFragment = InputFragment()
+                // メモ履歴用
+                nextFragment.recordList = viewModel.recordList.value!!
                 supportFragmentManager.beginTransaction().apply {
-                    add(R.id.main_frame, InputFragment())
+                    add(R.id.main_frame, nextFragment)
                     addToBackStack(null)
                     commit()
                 }
             } else {
                 // Borrowerが設定されていなければ
                 // 設定されていないことを警告
-                Toast.makeText(this,"",Toast.LENGTH_LONG)
+                Snackbar.make(actionBtn,"借主が未設定です。", Snackbar.LENGTH_SHORT)
+                    .setBackgroundTint(ContextCompat.getColor(actionBtn.context,R.color.negativeColor))
                     .show()
             }
         }
+
         // Borrowerリストページへの画面遷移
         val nameBtn: Button = findViewById(R.id.name_buttnon)
         nameBtn.setOnClickListener {
@@ -108,6 +115,7 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
             }
         }
 
+        // Sort機能関連ボタン
         val sortBtn:ImageButton = findViewById(R.id.sort_button)
         val spinner:Spinner = findViewById(R.id.sort_spinner)
         val sortClearbtn: ImageButton = findViewById(R.id.sort_clear_button)
@@ -126,6 +134,7 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
         sortBtn.setOnClickListener {
             spinner.visibility = View.VISIBLE
             sortBtn.visibility = View.GONE
+            spinner.performClick()
         }
 
         val spinnerAdapter = ArrayAdapter<String>(this, android.R.layout.simple_spinner_item)
@@ -139,6 +148,21 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
         spinner.adapter = spinnerAdapter
         spinner.onItemSelectedListener = spinnerAdapterListener
 
+        // 借のみボタン
+        val borrowBtn:Button = findViewById(R.id.borrow_button)
+        borrowBtn.setOnClickListener {
+            spinner.setSelection(4)
+            viewModel.loadRecordItemsSorted(currentId as Int, SortItem.BORROW_ONLY)
+            activeSortModeUI()
+        }
+
+        // 貸のみボタン
+        val loanBtn:Button = findViewById(R.id.loan_button)
+        loanBtn.setOnClickListener {
+            spinner.setSelection(5)
+            viewModel.loadRecordItemsSorted(currentId as Int, SortItem.LOAN_ONLY)
+            activeSortModeUI()
+        }
     }
 
     /// Borrowerに紐づくレコードデータをセット&観測
@@ -163,6 +187,7 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
                             record.borrow,
                             record.desc
                         )
+                        fragment.recordList = it
                         supportFragmentManager
                             .beginTransaction()
                             .replace(R.id.main_frame, fragment)
@@ -242,15 +267,19 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
             // マイナス値
             if (amountMarkFlag) {
                 sumAmountLabel.setText("-" + "%,d".format(abs(result)) + "円")
+                sumAmountLabel.setTextColor(ContextCompat.getColorStateList(sumAmountLabel.context, R.color.negativeColor))
             } else {
                 sumAmountLabel.setText("+" + "%,d".format(abs(result)) + "円")
+                sumAmountLabel.setTextColor(ContextCompat.getColorStateList(sumAmountLabel.context, R.color.positiveColor))
             }
         } else {
             // プラス値
             if (amountMarkFlag) {
                 sumAmountLabel.setText("+" + "%,d".format(result) + "円")
+                sumAmountLabel.setTextColor(ContextCompat.getColorStateList(sumAmountLabel.context, R.color.positiveColor))
             } else {
                 sumAmountLabel.setText("-" + "%,d".format(result) + "円")
+                sumAmountLabel.setTextColor(ContextCompat.getColorStateList(sumAmountLabel.context, R.color.negativeColor))
             }
         }
     }
@@ -261,40 +290,42 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
         lifecycleScope.launch {
             dataStoreManager.observeSortItem().collect {
                 val spinner:Spinner = findViewById(R.id.sort_spinner)
-                when (it) {
-                    SortItem.AMOUNT_ASCE.name -> {
-                        spinner.setSelection(0)
-                        viewModel.loadRecordItemsSorted(currentId as Int, SortItem.AMOUNT_ASCE)
-                        activeSortModeUI()
-                    }
-                    SortItem.AMOUNT_DESC.name  -> {
-                        spinner.setSelection(1)
-                        viewModel.loadRecordItemsSorted(currentId as Int, SortItem.AMOUNT_DESC)
-                        activeSortModeUI()
-                    }
-                    SortItem.DATE_ASCE.name  -> {
-                        spinner.setSelection(2)
-                        viewModel.loadRecordItemsSorted(currentId as Int, SortItem.DATE_ASCE)
-                        activeSortModeUI()
-                    }
-                    SortItem.DATE_DESC.name  -> {
-                        spinner.setSelection(3)
-                        viewModel.loadRecordItemsSorted(currentId as Int, SortItem.DATE_DESC)
-                        activeSortModeUI()
-                    }
-                    SortItem.BORROW_ONLY.name  -> {
-                        spinner.setSelection(4)
-                        viewModel.loadRecordItemsSorted(currentId as Int, SortItem.BORROW_ONLY)
-                        activeSortModeUI()
-                    }
-                    SortItem.LOAN_ONLY.name  -> {
-                        spinner.setSelection(5)
-                        viewModel.loadRecordItemsSorted(currentId as Int, SortItem.LOAN_ONLY)
-                        activeSortModeUI()
-                    }
-                    else -> {
-                        spinner.setSelection(5)
-                        viewModel.loadRecordItemsSorted(currentId as Int, SortItem.NONE)
+                if (currentId != null) {
+                    when (it) {
+                        SortItem.AMOUNT_ASCE.name -> {
+                            spinner.setSelection(0)
+                            viewModel.loadRecordItemsSorted(currentId as Int, SortItem.AMOUNT_ASCE)
+                            activeSortModeUI()
+                        }
+                        SortItem.AMOUNT_DESC.name  -> {
+                            spinner.setSelection(1)
+                            viewModel.loadRecordItemsSorted(currentId as Int, SortItem.AMOUNT_DESC)
+                            activeSortModeUI()
+                        }
+                        SortItem.DATE_ASCE.name  -> {
+                            spinner.setSelection(2)
+                            viewModel.loadRecordItemsSorted(currentId as Int, SortItem.DATE_ASCE)
+                            activeSortModeUI()
+                        }
+                        SortItem.DATE_DESC.name  -> {
+                            spinner.setSelection(3)
+                            viewModel.loadRecordItemsSorted(currentId as Int, SortItem.DATE_DESC)
+                            activeSortModeUI()
+                        }
+                        SortItem.BORROW_ONLY.name  -> {
+                            spinner.setSelection(4)
+                            viewModel.loadRecordItemsSorted(currentId as Int, SortItem.BORROW_ONLY)
+                            activeSortModeUI()
+                        }
+                        SortItem.LOAN_ONLY.name  -> {
+                            spinner.setSelection(5)
+                            viewModel.loadRecordItemsSorted(currentId as Int, SortItem.LOAN_ONLY)
+                            activeSortModeUI()
+                        }
+                        else -> {
+                            spinner.setSelection(3)
+                            viewModel.loadRecordItemsSorted(currentId as Int, SortItem.NONE)
+                        }
                     }
                 }
             }
@@ -316,7 +347,6 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
     private val spinnerAdapterListener = object : AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
             // 選択された時に実行したい処理
-            var sortClearbtn: ImageButton = findViewById(R.id.sort_clear_button)
             lifecycleScope.launch {
                 dataStoreManager.saveSortItem(SortItem.values()[position].name)
                 sortItem = SortItem.values()[position]

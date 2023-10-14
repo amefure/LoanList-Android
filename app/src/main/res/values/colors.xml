@@ -10,4 +10,6 @@
     <color name="thema6">#2E5D96</color>
     <color name="textColor">#555555</color>
     <color name="systemColor">#e7e7e7</color>
+    <color name="positiveColor">#30bd4e</color>
+    <color name="negativeColor">#B00020</color>
 </resources>

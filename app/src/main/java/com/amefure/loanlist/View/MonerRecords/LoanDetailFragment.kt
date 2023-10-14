@@ -11,6 +11,7 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
+import com.amefure.loanlist.Models.Room.MoneyRecord
 import com.amefure.loanlist.R
 import com.amefure.loanlist.View.Input.InputFragment
 
@@ -30,6 +31,8 @@ class LoanDetailFragment : Fragment() {
 
     // リスナーの定義
     private lateinit var listener: eventListener
+
+    public var recordList: List<MoneyRecord> = listOf()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -62,8 +65,12 @@ class LoanDetailFragment : Fragment() {
         }
         val editBtn:ImageButton = view.findViewById(R.id.edit_button)
         editBtn.setOnClickListener {
+            // input画面にレコードの情報を渡して生成
+            var nextFragment = InputFragment.editInstance(id,amount,date,borrow,memo)
+            // メモ履歴用
+            nextFragment.recordList = recordList
             parentFragmentManager.beginTransaction().apply {
-                add(R.id.main_frame, InputFragment.editInstance(id,amount,date,borrow,memo))
+                add(R.id.main_frame, nextFragment)
                 addToBackStack(null)
                 commit()
             }

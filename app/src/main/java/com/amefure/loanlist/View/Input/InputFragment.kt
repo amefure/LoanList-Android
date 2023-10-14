@@ -3,23 +3,34 @@ package com.amefure.loanlist.View.Input
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.Spinner
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.amefure.loanlist.Models.DataStore.DataStoreManager
+import com.amefure.loanlist.Models.DataStore.SortItem
+import com.amefure.loanlist.Models.Room.MoneyRecord
 import com.amefure.loanlist.R
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import org.w3c.dom.Text
 import java.util.Calendar
+import kotlin.io.path.fileVisitor
 
 private const val ARG_ID_KEY = "ARG_ID_KEY"
 private const val ARG_AMOUNT_KEY = "ARG_AMOUNT_KEY"
@@ -42,6 +53,7 @@ class InputFragment : Fragment() {
     // 日付情報を保持
     private var dateString: String = ""
 
+    public var recordList: List<MoneyRecord> = listOf()
 
     private lateinit var amountText:EditText
     private lateinit var memoText:EditText
@@ -87,7 +99,6 @@ class InputFragment : Fragment() {
 
         borrowButton.setOnClickListener {
             isBorrow = true
-
             amountText.backgroundTintList =
                 ContextCompat.getColorStateList(this.requireContext(), R.color.thema1)
         }
@@ -102,6 +113,25 @@ class InputFragment : Fragment() {
             dateString = getFormatDateString(year,month,day)
         }
 
+        val memoHistoryBtn: ImageButton = view.findViewById(R.id.memo_history_button)
+        val memoHistorySpinner: Spinner = view.findViewById(R.id.memo_history_spinner)
+        memoHistorySpinner.visibility = View.GONE
+        memoHistoryBtn.setOnClickListener {
+            memoHistoryBtn.visibility = View.GONE
+            memoHistorySpinner.visibility = View.VISIBLE
+            memoHistorySpinner.performClick()
+        }
+
+        val spinnerAdapter = ArrayAdapter<String>(this.requireContext(), android.R.layout.simple_spinner_item)
+        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        recordList.forEach {
+            if (!it.desc.isEmpty()) {
+                spinnerAdapter.add(it.desc)
+            }
+        }
+        memoHistorySpinner.adapter = spinnerAdapter
+        memoHistorySpinner.onItemSelectedListener = spinnerAdapterListener
+
         doneButton.setOnClickListener {
             val amount = amountText.text.toString().toLongOrNull()
             val memo =  memoText.text.toString()
@@ -112,7 +142,7 @@ class InputFragment : Fragment() {
                         viewModel.registerRecord(currentId,amount,memo,isBorrow,dateString)
                         showOffKeyboard()
                         Snackbar.make(view,"追加しました。", Snackbar.LENGTH_SHORT)
-                            .setBackgroundTint(Color.GREEN)
+                            .setBackgroundTint(ContextCompat.getColor(view.context,R.color.positiveColor))
                             .show()
                         parentFragmentManager.apply {
                             popBackStack()
@@ -124,7 +154,7 @@ class InputFragment : Fragment() {
                         viewModel.updateRecord(currentId,receiveId!!,amount,memo,isBorrow,dateString)
                         showOffKeyboard()
                         Snackbar.make(view,"更新しました。", Snackbar.LENGTH_SHORT)
-                            .setBackgroundTint(Color.GREEN)
+                            .setBackgroundTint(ContextCompat.getColor(view.context,R.color.negativeColor))
                             .show()
                         parentFragmentManager.apply {
                             // トップまで戻す
@@ -188,6 +218,17 @@ class InputFragment : Fragment() {
             id = flow.first().toString().toInt()
         }
         return id
+    }
+
+    // スピナーがタップ
+    private val spinnerAdapterListener = object : AdapterView.OnItemSelectedListener {
+        override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
+            // 選択されたメモを入力欄に格納
+            memoText.setText(parent!!.getItemAtPosition(position).toString())
+        }
+        override fun onNothingSelected(parent: AdapterView<*>?) {
+
+        }
     }
 
     companion object {

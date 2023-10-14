@@ -76,17 +76,33 @@
         app:layout_constraintTop_toBottomOf="@+id/memo_text" />
 
     <ImageButton
-        android:id="@+id/sort_button"
+        android:id="@+id/memo_history_button"
         style="?android:attr/borderlessButtonStyle"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_marginEnd="30dp"
-        android:contentDescription="Sort Button"
+        android:contentDescription="Memo History Button"
         android:paddingLeft="0dp"
         android:paddingTop="0dp"
         android:paddingRight="0dp"
         android:paddingBottom="0dp"
         android:src="@drawable/sort_button_design"
+        app:layout_constraintBottom_toTopOf="@+id/loan_button"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/memo_text"
+        app:layout_constraintTop_toBottomOf="@+id/amount_text"
+        app:layout_constraintVertical_bias="0.433" />
+
+    <Spinner
+        android:id="@+id/memo_history_spinner"
+        android:layout_width="20dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="20dp"
+        android:contentDescription="Memo History Spinner"
+        android:paddingLeft="0dp"
+        android:paddingTop="0dp"
+        android:paddingRight="0dp"
+        android:paddingBottom="0dp"
         app:layout_constraintBottom_toTopOf="@+id/loan_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/memo_text"

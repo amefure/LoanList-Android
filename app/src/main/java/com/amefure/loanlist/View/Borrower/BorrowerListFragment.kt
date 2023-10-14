@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
+import androidx.core.content.ContextCompat
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -51,12 +52,12 @@ class BorrowerListFragment : Fragment() {
             viewModel.registerBorrower(nameText.text.toString())
             showOffKeyboard()
             Snackbar.make(view,"追加しました。",Snackbar.LENGTH_SHORT)
-                .setBackgroundTint(Color.GREEN)
+                .setBackgroundTint(ContextCompat.getColor(nameText.context,R.color.positiveColor))
                 .show()
             nameText.text.clear()
         } else {
             Snackbar.make(view,"名前が未入力です。",Snackbar.LENGTH_SHORT)
-                .setBackgroundTint(Color.RED)
+                .setBackgroundTint(ContextCompat.getColor(nameText.context,R.color.negativeColor))
                 .show()
         }
     }
@@ -88,10 +89,5 @@ class BorrowerListFragment : Fragment() {
             recyclerView.adapter = adapter
         }
         viewModel.loadBorrowerItems()
-
-
     }
-
-
-
 }
