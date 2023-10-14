@@ -17,7 +17,7 @@ class BorrowerListViewModel(app: Application) : RootViewModel(app) {
     public val borrowerList: LiveData<List<Borrower>> = _borrowerList
     private val dataStoreManager = DataStoreManager(app)
 
-    fun loadBorrowerItems() {
+    public fun loadBorrowerItems() {
         // データの取得は非同期で
         viewModelScope.launch (Dispatchers.IO) {  // データ取得はIOスレッドで
             rootRepository.loadBorrowerItems {
@@ -26,19 +26,19 @@ class BorrowerListViewModel(app: Application) : RootViewModel(app) {
         }
     }
 
-    fun registerBorrower(name:String) {
+    public fun registerBorrower(name:String) {
         viewModelScope.launch(Dispatchers.IO) {
             rootRepository.insertBorrower(name)
         }
     }
 
-    fun updateBorrower(id: Int, name:String, returnFlag: Boolean ,current: Boolean, amountSum: Long) {
+    public fun updateBorrower(id: Int, name:String, returnFlag: Boolean ,current: Boolean, amountSum: Long) {
         viewModelScope.launch(Dispatchers.IO) {
             rootRepository.updateBorrower(id,name,returnFlag,current, amountSum)
         }
     }
 
-    fun deleteBorrower(borrower:Borrower) {
+    public fun deleteBorrower(borrower:Borrower) {
         viewModelScope.launch(Dispatchers.IO) {
             dataStoreManager.saveCurrentUserId(0)
             rootRepository.deleteBorrower(borrower)

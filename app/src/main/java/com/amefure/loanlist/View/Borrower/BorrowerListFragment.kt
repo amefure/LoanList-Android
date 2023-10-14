@@ -75,7 +75,7 @@ class BorrowerListFragment : Fragment() {
         recyclerView.addOnItemTouchListener(itemTouchListener)
 
         viewModel.borrowerList.observe(this.requireActivity()) {
-            val adapter = BorrowerListAdapter(viewModel,it)
+            val adapter = BorrowerListAdapter(viewModel,it) // .sortedBy { it.returnFlag }
             val swipeToDeleteCallback = BorrowerListSwipeToDeleteCallback(adapter)
             val itemTouchHelper = ItemTouchHelper(swipeToDeleteCallback)
             itemTouchHelper.attachToRecyclerView(recyclerView)

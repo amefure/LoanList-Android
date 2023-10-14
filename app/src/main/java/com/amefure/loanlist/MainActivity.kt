@@ -30,7 +30,7 @@ import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
 import kotlin.math.abs
 
-class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
+class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener {
     override fun onDeleteClick(id: Int) {
         // LoanDetailFragmentで削除ボタンを押されたイベント
         adapter.deleteItem(id)

@@ -18,7 +18,6 @@ class BorrowerListAdapter (private val viewModel: BorrowerListViewModel, borrowe
 
     override fun getItemCount(): Int = _borrowerList.size
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MainViewHolder {
         return MainViewHolder(
             LayoutInflater.from(parent.context).inflate(R.layout.fragment_borrower_list_item, parent, false)
