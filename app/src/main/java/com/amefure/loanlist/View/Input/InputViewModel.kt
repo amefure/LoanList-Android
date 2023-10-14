@@ -1,21 +1,20 @@
 package com.amefure.loanlist.View.Input
 
 import android.app.Application
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.amefure.loanlist.Models.Room.Borrower
-import com.amefure.loanlist.Models.Room.MoneyRecord
 import com.amefure.loanlist.RootViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class InputViewModel(app:Application):RootViewModel(app) {
 
+    // レコードを登録や削除時にsumプロパティの値を変化させるため内部的に保持
+    // 外部には公開しないがFragmentのcreate時にloadBorrowerItems
     private val _borrowerList = MutableLiveData<List<Borrower>>()
-    public val borrowerList: LiveData<List<Borrower>> = _borrowerList
 
-    fun loadBorrowerItems() {
+    public fun loadBorrowerItems() {
         // データの取得は非同期で
         viewModelScope.launch (Dispatchers.IO) {  // データ取得はIOスレッドで
             rootRepository.loadBorrowerItems {

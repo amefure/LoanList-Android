@@ -7,7 +7,6 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
@@ -32,6 +31,7 @@ class LoanDetailFragment : Fragment() {
     // リスナーの定義
     private lateinit var listener: eventListener
 
+    // メモ履歴表示のためInputへ渡すためにレコードリストを前画面から受け取る
     public var recordList: List<MoneyRecord> = listOf()
 
     override fun onCreateView(

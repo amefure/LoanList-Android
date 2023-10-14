@@ -18,7 +18,6 @@ data class Borrower (
     val amountSum: Long
 ){
     companion object {
-
         fun createFakes(): List<Borrower> {
             val now = System.currentTimeMillis()
             return List(10) {

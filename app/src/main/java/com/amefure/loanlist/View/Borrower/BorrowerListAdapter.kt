@@ -11,6 +11,8 @@ import com.amefure.loanlist.Models.Room.Borrower
 import com.amefure.loanlist.R
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+
+// リサイクルビュー用リストアダプター
 class BorrowerListAdapter (private val viewModel: BorrowerListViewModel, borrowerList: List<Borrower>) :RecyclerView.Adapter<BorrowerListAdapter.MainViewHolder>(){
     private var _borrowerList: MutableList<Borrower> = borrowerList.toMutableList()
 

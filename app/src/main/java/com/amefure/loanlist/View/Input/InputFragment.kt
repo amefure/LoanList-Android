@@ -3,7 +3,6 @@ package com.amefure.loanlist.View.Input
 import android.content.Context
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -16,21 +15,15 @@ import android.widget.DatePicker
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Spinner
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import com.amefure.loanlist.Models.DataStore.DataStoreManager
-import com.amefure.loanlist.Models.DataStore.SortItem
 import com.amefure.loanlist.Models.Room.MoneyRecord
 import com.amefure.loanlist.R
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import org.w3c.dom.Text
 import java.util.Calendar
-import kotlin.io.path.fileVisitor
 
 private const val ARG_ID_KEY = "ARG_ID_KEY"
 private const val ARG_AMOUNT_KEY = "ARG_AMOUNT_KEY"
@@ -53,6 +46,7 @@ class InputFragment : Fragment() {
     // 日付情報を保持
     private var dateString: String = ""
 
+    // メモ履歴表示のためレコードリストを前画面から受け取る
     public var recordList: List<MoneyRecord> = listOf()
 
     private lateinit var amountText:EditText

@@ -1,14 +1,11 @@
 package com.amefure.loanlist.View.Borrower
 
 import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.amefure.loanlist.App
 import com.amefure.loanlist.Models.DataStore.DataStoreManager
 import com.amefure.loanlist.Models.Room.Borrower
-import com.amefure.loanlist.Models.Room.MoneyRecord
 import com.amefure.loanlist.RootViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

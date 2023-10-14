@@ -1,27 +1,21 @@
 package com.amefure.loanlist.Models.Room
 
 import android.content.Context
-import androidx.lifecycle.viewModelScope
-import androidx.room.Room
-import com.amefure.loanlist.Models.DataStore.DataStoreManager
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
-import java.time.temporal.TemporalAmount
+
 
 class RootRepository (context: Context) {
 
+    // Dao
     private val borrowerDao = BorrowerDatabase.getDatabase(context).dao()
     private val recordDao = MoneyRecordDatabase.getDatabase(context).dao()
 
+    // ゴミ箱
     private val compositeDisposable = CompositeDisposable()
 
-
-
+    // 借主全て読み込み
     public fun loadBorrowerItems(callback: (List<Borrower>) -> Unit) {
         compositeDisposable.add(
             borrowerDao.getAllBorrowers()
@@ -63,11 +57,13 @@ class RootRepository (context: Context) {
     }
 
 
-//    MoneyRecords
 
-    public fun loadMoneyRecords(currentId:Int,callback: (List<MoneyRecord>) -> Unit) {
+    // MoneyRecords
+    // アプリ内の全てのレコードを取得する
+    // 表示はフィルターで制御する
+    public fun loadMoneyRecords(callback: (List<MoneyRecord>) -> Unit) {
         compositeDisposable.add(
-            recordDao.getAllRecordsForBorrower(currentId)
+            recordDao.getAllRecords()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
@@ -103,13 +99,14 @@ class RootRepository (context: Context) {
         recordDao.updateMoneyRecord(record)
     }
 
+    // 該当レコードを削除する
     public fun deleteMoneyRecord(record:MoneyRecord) {
         recordDao.deleteMoneyRecord(record)
     }
 
+    // 借主削除時に該当レコードを全て削除する
     public fun deleteBorrowerAllMoneyRecord(id: Int) {
         recordDao.deleteAllMoneyRecord(id)
     }
-
 
 }

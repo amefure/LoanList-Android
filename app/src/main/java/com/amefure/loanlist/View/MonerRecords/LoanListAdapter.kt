@@ -5,14 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
-import com.amefure.loanlist.Models.Room.Borrower
 import com.amefure.loanlist.Models.Room.MoneyRecord
 import com.amefure.loanlist.R
-import com.amefure.loanlist.View.Borrower.BorrowerListFragment
-import com.amefure.loanlist.View.Borrower.BorrowerListViewModel
-
 
 class LoanListAdapter(private val viewModel: LoanListViewModel, recordList: List<MoneyRecord>) :RecyclerView.Adapter<LoanListAdapter.MainViewHolder>(){
 

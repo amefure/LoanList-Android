@@ -1,11 +1,9 @@
 package com.amefure.loanlist.View.MonerRecords
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
-import com.amefure.loanlist.Models.DataStore.DataStoreManager
 import com.amefure.loanlist.Models.DataStore.SortItem
 import com.amefure.loanlist.Models.Room.Borrower
 import com.amefure.loanlist.Models.Room.MoneyRecord
@@ -16,6 +14,9 @@ import kotlinx.coroutines.launch
 class LoanListViewModel(app:Application):RootViewModel(app) {
     private val _recordList = MutableLiveData<List<MoneyRecord>>()
     val recordList: LiveData<List<MoneyRecord>> = _recordList
+
+    // 並び替え用にViewModel内で最新のものを保持しておく
+    private var currentList: List<MoneyRecord> = listOf()
 
     private val _borrowerList = MutableLiveData<List<Borrower>>()
     public val borrowerList: LiveData<List<Borrower>> = _borrowerList
@@ -31,43 +32,47 @@ class LoanListViewModel(app:Application):RootViewModel(app) {
     }
 
     // レコード読み込み処理
-    public fun loadRecordItemsSorted(currentId:Int, sortItem: SortItem) {
-        // データの取得は非同期で
-        viewModelScope.launch (Dispatchers.IO) {  // データ取得はIOスレッドで
-            // 読み込む前に一旦リセット
-            _recordList.postValue(listOf())
-            rootRepository.loadMoneyRecords(currentId) {
-                when (sortItem) {
-                    SortItem.AMOUNT_ASCE -> {
-                        // 金額昇順
-                        _recordList.postValue(it.sortedBy { it.amount })
-                    }
-                    SortItem.AMOUNT_DESC  -> {
-                        // 金額降順
-                        _recordList.postValue(it.sortedBy { it.amount }.reversed())
-                    }
-                    SortItem.DATE_ASCE  -> {
-                        // 日付昇順
-                        _recordList.postValue(it.sortedBy { it.date })
-                    }
-                    SortItem.DATE_DESC  -> {
-                        // 日付降順
-                        _recordList.postValue(it.sortedBy { it.date }.reversed())
-                    }
-                    SortItem.BORROW_ONLY  -> {
-                        // 借のみかつ日付降順
-                        _recordList.postValue(it.filter { it.borrow == true }.sortedBy { it.date }.reversed())
-                    }
-                    SortItem.LOAN_ONLY  -> {
-                        // 貸のみかつ日付降順
-                        _recordList.postValue(it.filter { it.borrow == false }.sortedBy { it.date }.reversed())
-                    }
-                    else -> {
-                        // NONEは日付の降順にしておく
-                        _recordList.postValue(it.sortedBy { it.date }.reversed())
-                    }
-                }
+    public fun loadRecordItems() {
+        viewModelScope.launch (Dispatchers.IO) {
+            rootRepository.loadMoneyRecords() {
+                // 並び替え用保持プロパティにも保持
+                currentList = it
+                _recordList.postValue(it.sortedBy { it.date }.reversed())
+            }
+        }
+    }
 
+
+    // 読み込み済みのレコードを並び替える
+    public fun recordItemsSorted(sortItem: SortItem) {
+        when (sortItem) {
+            SortItem.AMOUNT_ASCE -> {
+                // 金額昇順
+                _recordList.postValue(currentList.sortedBy { it.amount })
+            }
+            SortItem.AMOUNT_DESC  -> {
+                // 金額降順
+                _recordList.postValue(currentList.sortedBy { it.amount }.reversed())
+            }
+            SortItem.DATE_ASCE  -> {
+                // 日付昇順
+                _recordList.postValue(currentList.sortedBy { it.date })
+            }
+            SortItem.DATE_DESC  -> {
+                // 日付降順
+                _recordList.postValue(currentList.sortedBy { it.date }.reversed())
+            }
+            SortItem.BORROW_ONLY  -> {
+                // 借のみかつ日付降順
+                _recordList.postValue(currentList.filter { it.borrow == true }.sortedBy { it.date }.reversed())
+            }
+            SortItem.LOAN_ONLY  -> {
+                // 貸のみかつ日付降順
+                _recordList.postValue(currentList.filter { it.borrow == false }.sortedBy { it.date }.reversed())
+            }
+            else -> {
+                // NONEは日付の降順にしておく
+                _recordList.postValue(currentList.sortedBy { it.date }.reversed())
             }
         }
     }

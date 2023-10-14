@@ -2,12 +2,11 @@ package com.amefure.loanlist.Models.Room
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
 import androidx.room.PrimaryKey
 
 
 @Entity(tableName = "record_table",
+// なぜか関連付けできず
 //    foreignKeys = [ForeignKey(
 //        entity = Borrower::class,
 //        parentColumns = ["id"],

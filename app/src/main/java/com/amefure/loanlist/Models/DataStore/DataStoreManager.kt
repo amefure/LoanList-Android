@@ -9,10 +9,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
 import java.io.IOException
-import java.time.temporal.TemporalAmount
 
 class DataStoreManager(private val context: Context) {
-
 
     companion object {
         // ソート
@@ -21,9 +19,9 @@ class DataStoreManager(private val context: Context) {
         val AMOUNT_MARK = stringPreferencesKey("amount_mark")
         // レコードを表示するID
         val CURRENT_USER_ID = intPreferencesKey("current_user_id")
-
     }
 
+    // ソート
     suspend fun saveSortItem(sortItem: String) {
         try {
             context.dataStore.edit { preferences ->
@@ -46,6 +44,7 @@ class DataStoreManager(private val context: Context) {
         }
     }
 
+    // +/-表示入れ替えフラグ
     suspend fun saveAmountMark(amountMark: String) {
         try {
             context.dataStore.edit { preferences ->
@@ -68,6 +67,7 @@ class DataStoreManager(private val context: Context) {
         }
     }
 
+    // レコードを表示するID
     suspend fun saveCurrentUserId(id: Int) {
         try {
             context.dataStore.edit { preferences ->

@@ -22,7 +22,7 @@ interface BorrowerDao {
     @Query("SELECT * FROM borrower_table")
     fun getAllBorrowers(): Flowable<List<Borrower>>
 
-    @Query("SELECT * FROM borrower_table WHERE id = :id")
-    fun getBorrowerById(id: Int): Flowable<Borrower>
-
+    // 未使用
+    // @Query("SELECT * FROM borrower_table WHERE id = :id")
+    // fun getBorrowerById(id: Int): Flowable<Borrower>
 }

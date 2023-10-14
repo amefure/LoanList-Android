@@ -2,12 +2,9 @@ package com.amefure.loanlist.View.Borrower
 
 import android.view.MotionEvent
 import android.view.View
-import android.widget.Toast
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
 import com.amefure.loanlist.Models.DataStore.DataStoreManager
 import com.amefure.loanlist.Models.Room.Borrower
-import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.runBlocking
 
 class BorrowerListTouchListener(private val viewModel: BorrowerListViewModel) : RecyclerView.SimpleOnItemTouchListener() {
@@ -25,14 +22,14 @@ class BorrowerListTouchListener(private val viewModel: BorrowerListViewModel) : 
                         if (tappedItem != null) {
                             val dataStoreManager = DataStoreManager(rv.context)
                             runBlocking {
-                                // タッチされたアイテムをアクティブにする
+                                // タッチされたIDをローカルに保存
                                 dataStoreManager.saveCurrentUserId(tappedItem.id.toInt())
-                                // データを変更することでRecyclerViewも更新される
+                                // データを変更することでRecyclerViewも更新されるため更新
                                 viewModel.updateBorrower(
                                     tappedItem.id,
                                     tappedItem.name,
                                     tappedItem.returnFlag,
-                                    true,
+                                    true, // カレントモード
                                     tappedItem.amountSum)
                             }
                         }

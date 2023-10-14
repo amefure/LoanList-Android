@@ -2,6 +2,7 @@ package com.amefure.loanlist
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
@@ -9,7 +10,6 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Spinner
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
@@ -50,7 +50,7 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
     private var amountMarkFlag: Boolean = true
     // レコードの合計金額保持用
     private var sumAmount: Long = 0
-    // SortItem
+    // currentSortItem
     private var sortItem: SortItem = SortItem.NONE
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -60,22 +60,27 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
         recyclerView = findViewById(R.id.loan_list)
 
         // 借主一覧を取得
-        // IDはローカルに保存しているが名前と合計は保存していないのでDBから取得する
+        // (1) IDはローカルに保存しているが名前と合計は保存していないのでDBから取得する
         viewModel.loadBorrowerItems()
+        // (1) アプリ内に保存されている全てのrecordを取得する(表示はフィルターで制御)
+        viewModel.loadRecordItems()
 
-        // 選択されているBorrowerの変更を観測する(ローカル)
+        // (2) ViewModelレコード情報観測開始 この時点ではレコードは格納されない
+        observedMoneyRecordsData()
+        // (3) 選択されているBorrowerの変更を観測しプロパティに保持(ローカル)
         observeCurrentBorrowerId()
-        // 借主情報の変更を観測&UI反映
+        // (4) 借主情報の変更を観測&UI反映
         observeCurrentBorrower()
-        // 設定画面のスイッチの値を観測
+        // (5) 設定画面のスイッチの値を観測
         observeAmountMark()
-        // SortItemを観測
+        // (6) SortItemを観測 変化があるたびにSortのかかったIDを読み取る
         observeSortItem()
 
         // レコード追加ボタン
         val actionBtn: FloatingActionButton = findViewById(R.id.floating_action_button)
         actionBtn.setOnClickListener {
             if (currentId != null) {
+                Log.e("-",currentId.toString())
                 // Borrowerが設定されていれば
                 // Input画面へ遷移
                 var nextFragment = InputFragment()
@@ -152,7 +157,7 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
         val borrowBtn:Button = findViewById(R.id.borrow_button)
         borrowBtn.setOnClickListener {
             spinner.setSelection(4)
-            viewModel.loadRecordItemsSorted(currentId as Int, SortItem.BORROW_ONLY)
+            viewModel.recordItemsSorted(SortItem.BORROW_ONLY)
             activeSortModeUI()
         }
 
@@ -160,21 +165,22 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
         val loanBtn:Button = findViewById(R.id.loan_button)
         loanBtn.setOnClickListener {
             spinner.setSelection(5)
-            viewModel.loadRecordItemsSorted(currentId as Int, SortItem.LOAN_ONLY)
+            viewModel.recordItemsSorted(SortItem.LOAN_ONLY)
             activeSortModeUI()
         }
     }
 
+    // (2)
     /// Borrowerに紐づくレコードデータをセット&観測
-    private fun observedMoneyRecordsData(currentId:Int) {
+    private fun observedMoneyRecordsData() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.addItemDecoration(
             DividerItemDecoration(this, DividerItemDecoration.VERTICAL)
         )
-
         // 観測開始
         viewModel.recordList.observe(this) {
-            adapter = LoanListAdapter(viewModel, it)
+            Log.e("=-------","recordList観測")
+            adapter = LoanListAdapter(viewModel, it.filter { it.borrowerId == currentId })
 
             adapter.setOnBookCellClickListener(
                 object : LoanListAdapter.OnBookCellClickListener {
@@ -200,44 +206,51 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
         }
     }
 
+
+    // (3)
     // ローカルに保存されている
     // アクティブになっているBorrowerIDを観測し変更があるたびにレコードデータを更新する
     // 借主リスト画面で新しく選択された時に発火
     private fun observeCurrentBorrowerId() {
         lifecycleScope.launch{
             dataStoreManager.observeCurrentUserId().collect {
-                currentId = it
                 //　削除された際(IDが0)にはnullにする
-                if (currentId == 0) {
+                if (it == 0) {
                     currentId = null
-                }
-                // nullじゃなければ該当Borrowerのレコードを観測開始
-                if (currentId != null) {
-                    observedMoneyRecordsData(currentId as Int)
+                } else if (it != currentId) {
+                    currentId = it
                 }
             }
         }
     }
 
+    // (4)
     // ローカルに保存されているアクティブIDを元に
     // 借主情報の変更を観測&UI反映
-    // 借主リスト画面で新しく選択された時に発火
+    // レコードが追加され度に更新するので観測
     private fun observeCurrentBorrower() {
         viewModel.borrowerList.observe(this) {
             val sumAmountLabel: TextView = findViewById(R.id.sum_amount_label)
             val nameBtn: Button = findViewById(R.id.name_buttnon)
 
             if (it.size != 0 && currentId != null) {
-                var currentBorrower = it.first { it.id == currentId }
+                var currentBorrower = it.filter { it.id == currentId }.firstOrNull()
 
-                // 合計金額をセット
-                sumAmount = currentBorrower.amountSum
-                // ラベルを更新
-                setJudgeSumAmountLabel(sumAmount)
+                if (currentBorrower != null) {
+                    // 合計金額をセット
+                    sumAmount = currentBorrower.amountSum
+                    // ラベルを更新
+                    setJudgeSumAmountLabel(sumAmount)
 
-                // 名前をセット
-                val name = currentBorrower.name
-                nameBtn.setText(name)
+                    // 名前をセット
+                    val name = currentBorrower.name
+                    nameBtn.setText(name)
+                } else {
+                    sumAmountLabel.setText("0円")
+                    // 名前をセット
+                    nameBtn.setText("unknown")
+                }
+
             } else {
                 sumAmountLabel.setText("0円")
                 nameBtn.setText("unknown")
@@ -246,6 +259,7 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
         }
     }
 
+    // (5)
     // 設定画面から+/-の変更を押されたことを検知する
     private fun observeAmountMark() {
         lifecycleScope.launch{
@@ -260,6 +274,8 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
         }
     }
 
+    // (4) - (1)
+    // (5) - (1)
     // レコードの合計金額ラベルをセットする
     private fun setJudgeSumAmountLabel(result: Long) {
         val sumAmountLabel: TextView = findViewById(R.id.sum_amount_label)
@@ -284,6 +300,7 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
         }
     }
 
+    // (6)
     // SortItemの値の変化を観測
     // 対象のSortがかかったレコードリストの読み込みを開始
     private fun observeSortItem() {
@@ -294,37 +311,37 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
                     when (it) {
                         SortItem.AMOUNT_ASCE.name -> {
                             spinner.setSelection(0)
-                            viewModel.loadRecordItemsSorted(currentId as Int, SortItem.AMOUNT_ASCE)
+                            viewModel.recordItemsSorted(SortItem.AMOUNT_ASCE)
                             activeSortModeUI()
                         }
                         SortItem.AMOUNT_DESC.name  -> {
                             spinner.setSelection(1)
-                            viewModel.loadRecordItemsSorted(currentId as Int, SortItem.AMOUNT_DESC)
+                            viewModel.recordItemsSorted(SortItem.AMOUNT_DESC)
                             activeSortModeUI()
                         }
                         SortItem.DATE_ASCE.name  -> {
                             spinner.setSelection(2)
-                            viewModel.loadRecordItemsSorted(currentId as Int, SortItem.DATE_ASCE)
+                            viewModel.recordItemsSorted(SortItem.DATE_ASCE)
                             activeSortModeUI()
                         }
                         SortItem.DATE_DESC.name  -> {
                             spinner.setSelection(3)
-                            viewModel.loadRecordItemsSorted(currentId as Int, SortItem.DATE_DESC)
+                            viewModel.recordItemsSorted(SortItem.DATE_DESC)
                             activeSortModeUI()
                         }
                         SortItem.BORROW_ONLY.name  -> {
                             spinner.setSelection(4)
-                            viewModel.loadRecordItemsSorted(currentId as Int, SortItem.BORROW_ONLY)
+                            viewModel.recordItemsSorted(SortItem.BORROW_ONLY)
                             activeSortModeUI()
                         }
                         SortItem.LOAN_ONLY.name  -> {
                             spinner.setSelection(5)
-                            viewModel.loadRecordItemsSorted(currentId as Int, SortItem.LOAN_ONLY)
+                            viewModel.recordItemsSorted(SortItem.LOAN_ONLY)
                             activeSortModeUI()
                         }
                         else -> {
                             spinner.setSelection(3)
-                            viewModel.loadRecordItemsSorted(currentId as Int, SortItem.NONE)
+                            viewModel.recordItemsSorted(SortItem.NONE)
                         }
                     }
                 }
@@ -332,6 +349,7 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
         }
     }
 
+    // (6) - (1)
     // Sortが有効になっている場合にUIを調整
     private fun activeSortModeUI() {
         val sortBtn:ImageButton = findViewById(R.id.sort_button)
@@ -343,12 +361,13 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener{
         sortClearbtn.imageTintList = ContextCompat.getColorStateList(sortClearbtn.context, R.color.thema1)
     }
 
-    // スピナーがタップ
+    // スピナーがタップされたイベント処理
     private val spinnerAdapterListener = object : AdapterView.OnItemSelectedListener {
         override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-            // 選択された時に実行したい処理
             lifecycleScope.launch {
+                // Sort情報をローカルに保存
                 dataStoreManager.saveSortItem(SortItem.values()[position].name)
+                // プロパティにも保持
                 sortItem = SortItem.values()[position]
             }
         }

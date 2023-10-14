@@ -2,22 +2,17 @@ package com.amefure.loanlist.View.Borrower
 
 
 import android.app.AlertDialog
-import android.content.ClipData.Item
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.util.Log
-import androidx.annotation.ColorRes
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.amefure.loanlist.R
-import com.amefure.loanlist.View.Borrower.BorrowerListAdapter
-import kotlin.math.log
 
 class BorrowerListSwipeToDeleteCallback(private val adapter: BorrowerListAdapter) : ItemTouchHelper.SimpleCallback(
     ItemTouchHelper.ACTION_STATE_IDLE, // ドラッグアンドドロップをサポートしない場合は0
@@ -134,8 +129,6 @@ class BorrowerListSwipeToDeleteCallback(private val adapter: BorrowerListAdapter
                     deleteBackGround.draw(canvas)
                 }
             }
-
-
         }
     }
 }
