@@ -16,6 +16,8 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.amefure.loanlist.R
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
 import com.google.android.material.snackbar.Snackbar
 
 
@@ -33,6 +35,9 @@ class BorrowerListFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        var adView: AdView = view.findViewById(R.id.adView)
+        adView.loadAd(AdRequest.Builder().build())
 
         val registerButton:Button = view.findViewById(R.id.register_button)
         registerButton.setOnClickListener {

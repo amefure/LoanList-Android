@@ -62,4 +62,7 @@ dependencies {
 
     // viewmodelsのために追加
     implementation 'androidx.fragment:fragment-ktx:1.2.2'
+
+    // AdMob
+    implementation("com.google.android.gms:play-services-ads:22.4.0")
 }

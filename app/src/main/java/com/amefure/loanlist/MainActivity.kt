@@ -25,6 +25,9 @@ import com.amefure.loanlist.View.MonerRecords.LoanDetailFragment
 import com.amefure.loanlist.View.MonerRecords.LoanListAdapter
 import com.amefure.loanlist.View.MonerRecords.LoanListViewModel
 import com.amefure.loanlist.View.Settings.SettingsFragment
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.launch
@@ -56,6 +59,10 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        MobileAds.initialize(this)
+        var adView: AdView = findViewById(R.id.adView)
+        adView.loadAd(AdRequest.Builder().build())
 
         recyclerView = findViewById(R.id.loan_list)
 

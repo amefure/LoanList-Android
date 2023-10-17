@@ -13,6 +13,8 @@ import android.widget.TextView
 import com.amefure.loanlist.Models.Room.MoneyRecord
 import com.amefure.loanlist.R
 import com.amefure.loanlist.View.Input.InputFragment
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
 
 private const val ARG_ID_KEY = "ARG_ID_KEY"
 private const val ARG_AMOUNT_KEY = "ARG_AMOUNT_KEY"
@@ -50,6 +52,10 @@ class LoanDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        var adView: AdView = view.findViewById(R.id.adView)
+        adView.loadAd(AdRequest.Builder().build())
+
         val amountLabel:TextView = view.findViewById(R.id.amount_label)
         val dateLabel:TextView = view.findViewById(R.id.date_label)
         val backImg:ImageView = view.findViewById(R.id.back_image)
