@@ -5,12 +5,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.amefure.loanlist.Models.DataStore.DataStoreManager
 import com.amefure.loanlist.Models.Room.Borrower
 import com.amefure.loanlist.R
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import kotlin.math.abs
 
 // リサイクルビュー用リストアダプター
 class BorrowerListAdapter (private val viewModel: BorrowerListViewModel, borrowerList: List<Borrower>) :RecyclerView.Adapter<BorrowerListAdapter.MainViewHolder>(){
@@ -28,6 +30,29 @@ class BorrowerListAdapter (private val viewModel: BorrowerListViewModel, borrowe
         val borrower = _borrowerList[position]
         holder.borrower.text = borrower.name
         holder.amount.text = "%,d".format(borrower.amountSum) + "円"
+
+        if (borrower.amountSum < 0) {
+            // マイナス値
+            if (holder.getAmountMark()) {
+                holder.amount.setText("-" + "%,d".format(abs(borrower.amountSum)) + "円")
+                holder.amount.setTextColor(ContextCompat.getColorStateList(holder.amount.context, R.color.negativeColor))
+            } else {
+                holder.amount.setText("+" + "%,d".format(abs(borrower.amountSum)) + "円")
+                holder.amount.setTextColor(ContextCompat.getColorStateList(holder.amount.context, R.color.positiveColor))
+            }
+        } else {
+            // プラス値
+            if (holder.getAmountMark()) {
+                holder.amount.setText("+" + "%,d".format(borrower.amountSum) + "円")
+                holder.amount.setTextColor(ContextCompat.getColorStateList(holder.amount.context, R.color.positiveColor))
+            } else {
+                holder.amount.setText("-" + "%,d".format(borrower.amountSum) + "円")
+                holder.amount.setTextColor(ContextCompat.getColorStateList(holder.amount.context, R.color.negativeColor))
+            }
+        }
+
+
+
         if (borrower.returnFlag) {
             holder.returnFlagImage.setImageResource(R.drawable.user_check_flag)
         } else {
@@ -96,13 +121,27 @@ class BorrowerListAdapter (private val viewModel: BorrowerListViewModel, borrowe
 
         val dataStoreManager = DataStoreManager(itemView.context)
 
-        fun getCurrentBorrowerId(): Int?{
+        fun getCurrentBorrowerId(): Int? {
             var id:Int?
             runBlocking {
                 val flow = dataStoreManager.observeCurrentUserId()
                 id = flow.first()
             }
             return id
+        }
+
+        fun getAmountMark(): Boolean {
+            var mark:String?
+            runBlocking {
+                val flow = dataStoreManager.observeAmountMark()
+                mark = flow.first()
+            }
+            if (mark == null || mark == "借") {
+                return true
+            } else {
+                return false
+            }
+
         }
     }
 }
