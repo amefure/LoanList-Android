@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">LoanList</string>
+    <string name="app_name">貸し借り管理アプリ</string>
 
     <!-- activity_main & fragment_input  -->
     <string name="borrow_button_text">借</string>
