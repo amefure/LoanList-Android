@@ -5,6 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     tools:context=".MainActivity">
 
     <androidx.fragment.app.FragmentContainerView
@@ -71,6 +72,7 @@
         android:paddingTop="0dp"
         android:paddingRight="0dp"
         android:paddingBottom="0dp"
+        android:textColor="@color/textColor"
         android:text="unknown"
         app:backgroundTint="@null"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
@@ -107,7 +109,6 @@
         android:paddingTop="0dp"
         android:paddingRight="0dp"
         android:paddingBottom="0dp"
-        android:src="@drawable/sort_button_design"
         app:layout_constraintBottom_toTopOf="@+id/guideline2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.223"
@@ -177,15 +178,15 @@
         android:layout_gravity="bottom|right"
         android:layout_margin="16dp"
         android:contentDescription="追加ボタン"
+        android:textColor="@android:color/white"
         app:backgroundTint="@color/thema6"
         app:fabSize="mini"
-        android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.926"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.962"
+        app:layout_constraintVertical_bias="0.90999997"
         app:srcCompat="@drawable/add_button_icon" />
 
     <com.google.android.gms.ads.AdView

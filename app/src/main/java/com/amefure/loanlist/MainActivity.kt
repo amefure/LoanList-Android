@@ -186,7 +186,6 @@ class MainActivity : AppCompatActivity() ,LoanDetailFragment.eventListener {
         )
         // 観測開始
         viewModel.recordList.observe(this) {
-            Log.e("=-------","recordList観測")
             adapter = LoanListAdapter(viewModel, it.filter { it.borrowerId == currentId })
 
             adapter.setOnBookCellClickListener(

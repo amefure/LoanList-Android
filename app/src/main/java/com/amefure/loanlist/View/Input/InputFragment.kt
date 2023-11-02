@@ -148,7 +148,7 @@ class InputFragment : Fragment() {
                         viewModel.updateRecord(currentId,receiveId!!,amount,memo,isBorrow,dateString)
                         showOffKeyboard()
                         Snackbar.make(view,"更新しました。", Snackbar.LENGTH_SHORT)
-                            .setBackgroundTint(ContextCompat.getColor(view.context,R.color.negativeColor))
+                            .setBackgroundTint(ContextCompat.getColor(view.context,R.color.positiveColor))
                             .show()
                         parentFragmentManager.apply {
                             // トップまで戻す
@@ -160,7 +160,7 @@ class InputFragment : Fragment() {
             } else {
                 showOffKeyboard()
                 Snackbar.make(view,"金額が未入力です。", Snackbar.LENGTH_SHORT)
-                    .setBackgroundTint(Color.RED)
+                    .setBackgroundTint(ContextCompat.getColor(view.context,R.color.negativeColor))
                     .show()
             }
         }

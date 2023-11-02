@@ -68,6 +68,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="50dp"
         android:text="MEMO"
+        android:textColor="@color/textColor"
         android:textSize="20sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/back_image" />
@@ -79,6 +80,7 @@
         android:layout_marginStart="30dp"
         android:layout_marginTop="50dp"
         android:layout_marginEnd="30dp"
+        android:textColor="@color/textColor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
@@ -89,6 +91,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="50dp"
         android:text="2023/10/4"
+        android:textColor="@color/textColor"
         app:layout_constraintBottom_toTopOf="@+id/back_image"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/delete_button" />

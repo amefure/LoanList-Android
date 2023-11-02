@@ -6,6 +6,6 @@
         android:color="@color/thema2"
         />
     <stroke
-        android:color="@color/white"
-        android:width="3dp"/>
+        android:color="#eeeeee"
+        android:width="2dp"/>
 </shape>
